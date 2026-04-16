@@ -262,6 +262,15 @@ The `RewardHackingDetector` monitors three signals per episode: KL divergence of
 
 **Task 3 had zero composite hacking alerts** across 1,500 episodes. This is the most significant hacking observation: JOIN tasks require selecting both a join table and a join key, which forces the agent to diversify its column choices, keeping coverage signal below the Spearman threshold. This demonstrates that task structure directly affects hacking vulnerability — a finding with implications for reward signal design in multi-step structured task domains.
 
+The parallel finding in the [RLHF repo](https://github.com/kartikmunjal/rlhf-and-reward-modelling-alt) is that reward signal type is an independent axis: PPO trained with an explicit Rubric RM (Conciseness criterion) produces 31% verbose-bias rate vs. 78% for PPO trained with an implicit Bradley-Terry RM — same task, different reward signal. Together the two findings suggest a 2×2 design space:
+
+| | Simple task structure | Complex task structure (e.g. INNER JOIN) |
+|---|---|---|
+| **Implicit RM (Bradley-Terry)** | High hacking risk (T1/T2/T4 alert within 100–500 eps) | Lower structural risk from diversity, but RM still exploitable |
+| **Explicit Rubric RM** | Reward signal controlled (31% vs 78% verbose-bias) | Both dimensions favorable — lowest overall hacking exposure |
+
+Both dimensions matter and they interact: a well-designed reward signal cannot compensate for a trivially exploitable task structure, and a rich task structure does not immunise against a weak reward signal.
+
 ### Curriculum Ablation: Task 3 (INNER JOIN)
 
 **Setup**: Train REINFORCE on Task 3 twice — once from random initialisation (scratch), once initialised from the Task 1 (Simple SELECT) checkpoint. 1,200 episodes each, same hyperparameters.
