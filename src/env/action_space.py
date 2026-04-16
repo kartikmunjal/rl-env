@@ -335,7 +335,12 @@ class HierarchicalActionSpace:
     # Subquery phases mirror outer phases but use SUBQ_ slot keys
     def _subq_select_col_spec(self, slots: dict) -> ActionSpec:
         subq_from = slots.get(BuildPhase.SUBQ_FROM_TABLE)
-        cols = [c.column for c in self.schema.columns_of(subq_from or "")]
+        if subq_from:
+            cols = [c.column for c in self.schema.columns_of(subq_from)]
+        else:
+            # Fallback: all columns across all tables (SUBQ_FROM_TABLE not yet filled)
+            cols = [c.column for t in self._table_names for c in self.schema.columns_of(t)]
+        cols = list(dict.fromkeys(cols)) or ["customer_id"]  # deduplicate, ensure non-empty
         return self._make_spec(BuildPhase.SUBQ_SELECT_COL, cols)
 
     def _subq_from_table_spec(self, slots: dict) -> ActionSpec:

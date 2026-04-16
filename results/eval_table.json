@@ -1,0 +1,412 @@
+{
+  "task_01_simple": {
+    "exact": {
+      "random": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      },
+      "rule": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      },
+      "reinforce": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      }
+    },
+    "execution": {
+      "random": {
+        "mean_reward": -0.0573,
+        "std": 0.0495,
+        "exec_match": -0.0573,
+        "partial_credit": 0.0
+      },
+      "rule": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      },
+      "reinforce": {
+        "mean_reward": -0.032,
+        "std": 0.0466,
+        "exec_match": -0.032,
+        "partial_credit": 0.0
+      }
+    },
+    "partial": {
+      "random": {
+        "mean_reward": 0.5892,
+        "std": 0.1187,
+        "exec_match": 0.0,
+        "partial_credit": 0.5892
+      },
+      "rule": {
+        "mean_reward": 0.6392,
+        "std": 0.0896,
+        "exec_match": 0.0,
+        "partial_credit": 0.6392
+      },
+      "reinforce": {
+        "mean_reward": 0.61,
+        "std": 0.1098,
+        "exec_match": 0.0,
+        "partial_credit": 0.61
+      }
+    },
+    "composite": {
+      "random": {
+        "mean_reward": 0.1466,
+        "std": 0.0415,
+        "exec_match": -0.0573,
+        "partial_credit": 0.5892
+      },
+      "rule": {
+        "mean_reward": 0.1873,
+        "std": 0.0314,
+        "exec_match": 0.0,
+        "partial_credit": 0.6392
+      },
+      "reinforce": {
+        "mean_reward": 0.1648,
+        "std": 0.0414,
+        "exec_match": -0.032,
+        "partial_credit": 0.61
+      }
+    }
+  },
+  "task_02_aggregation": {
+    "exact": {
+      "random": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      },
+      "rule": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      },
+      "reinforce": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      }
+    },
+    "execution": {
+      "random": {
+        "mean_reward": -0.0327,
+        "std": 0.0469,
+        "exec_match": -0.0327,
+        "partial_credit": 0.0
+      },
+      "rule": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      },
+      "reinforce": {
+        "mean_reward": -0.0247,
+        "std": 0.0743,
+        "exec_match": -0.0247,
+        "partial_credit": 0.0
+      }
+    },
+    "partial": {
+      "random": {
+        "mean_reward": 0.3063,
+        "std": 0.1301,
+        "exec_match": 0.0,
+        "partial_credit": 0.3063
+      },
+      "rule": {
+        "mean_reward": 0.349,
+        "std": 0.1636,
+        "exec_match": 0.0,
+        "partial_credit": 0.349
+      },
+      "reinforce": {
+        "mean_reward": 0.3321,
+        "std": 0.1436,
+        "exec_match": 0.0,
+        "partial_credit": 0.3321
+      }
+    },
+    "composite": {
+      "random": {
+        "mean_reward": 0.0733,
+        "std": 0.0449,
+        "exec_match": -0.0327,
+        "partial_credit": 0.3063
+      },
+      "rule": {
+        "mean_reward": 0.1047,
+        "std": 0.0491,
+        "exec_match": 0.0,
+        "partial_credit": 0.349
+      },
+      "reinforce": {
+        "mean_reward": 0.0854,
+        "std": 0.0614,
+        "exec_match": -0.0247,
+        "partial_credit": 0.3321
+      }
+    }
+  },
+  "task_03_join": {
+    "exact": {
+      "random": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      },
+      "rule": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      },
+      "reinforce": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      }
+    },
+    "execution": {
+      "random": {
+        "mean_reward": -0.09,
+        "std": 0.03,
+        "exec_match": -0.09,
+        "partial_credit": 0.0
+      },
+      "rule": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      },
+      "reinforce": {
+        "mean_reward": -0.0377,
+        "std": 0.0485,
+        "exec_match": -0.0377,
+        "partial_credit": 0.0
+      }
+    },
+    "partial": {
+      "random": {
+        "mean_reward": 0.6104,
+        "std": 0.1156,
+        "exec_match": 0.0,
+        "partial_credit": 0.6104
+      },
+      "rule": {
+        "mean_reward": 0.6893,
+        "std": 0.0919,
+        "exec_match": 0.0,
+        "partial_credit": 0.6893
+      },
+      "reinforce": {
+        "mean_reward": 0.6773,
+        "std": 0.0957,
+        "exec_match": 0.0,
+        "partial_credit": 0.6773
+      }
+    },
+    "composite": {
+      "random": {
+        "mean_reward": 0.1377,
+        "std": 0.0387,
+        "exec_match": -0.09,
+        "partial_credit": 0.6104
+      },
+      "rule": {
+        "mean_reward": 0.203,
+        "std": 0.0254,
+        "exec_match": 0.0,
+        "partial_credit": 0.6893
+      },
+      "reinforce": {
+        "mean_reward": 0.1817,
+        "std": 0.0384,
+        "exec_match": -0.0377,
+        "partial_credit": 0.6773
+      }
+    }
+  },
+  "task_04_subquery": {
+    "exact": {
+      "random": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      },
+      "rule": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      },
+      "reinforce": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      }
+    },
+    "execution": {
+      "random": {
+        "mean_reward": -0.0803,
+        "std": 0.0811,
+        "exec_match": -0.0803,
+        "partial_credit": 0.0
+      },
+      "rule": {
+        "mean_reward": 0.2033,
+        "std": 0.2456,
+        "exec_match": 0.2033,
+        "partial_credit": 0.0
+      },
+      "reinforce": {
+        "mean_reward": -0.0367,
+        "std": 0.1591,
+        "exec_match": -0.0367,
+        "partial_credit": 0.0
+      }
+    },
+    "partial": {
+      "random": {
+        "mean_reward": 0.7485,
+        "std": 0.084,
+        "exec_match": 0.0,
+        "partial_credit": 0.7485
+      },
+      "rule": {
+        "mean_reward": 0.6937,
+        "std": 0.0822,
+        "exec_match": 0.0,
+        "partial_credit": 0.6937
+      },
+      "reinforce": {
+        "mean_reward": 0.7414,
+        "std": 0.091,
+        "exec_match": 0.0,
+        "partial_credit": 0.7414
+      }
+    },
+    "composite": {
+      "random": {
+        "mean_reward": 0.1839,
+        "std": 0.0438,
+        "exec_match": -0.0803,
+        "partial_credit": 0.7485
+      },
+      "rule": {
+        "mean_reward": 0.3038,
+        "std": 0.1245,
+        "exec_match": 0.2033,
+        "partial_credit": 0.6937
+      },
+      "reinforce": {
+        "mean_reward": 0.2031,
+        "std": 0.0789,
+        "exec_match": -0.0367,
+        "partial_credit": 0.7414
+      }
+    }
+  },
+  "task_05_window": {
+    "exact": {
+      "random": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      },
+      "rule": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      },
+      "reinforce": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      }
+    },
+    "execution": {
+      "random": {
+        "mean_reward": -0.0467,
+        "std": 0.0499,
+        "exec_match": -0.0467,
+        "partial_credit": 0.0
+      },
+      "rule": {
+        "mean_reward": 0.0,
+        "std": 0.0,
+        "exec_match": 0.0,
+        "partial_credit": 0.0
+      },
+      "reinforce": {
+        "mean_reward": -0.0303,
+        "std": 0.046,
+        "exec_match": -0.0303,
+        "partial_credit": 0.0
+      }
+    },
+    "partial": {
+      "random": {
+        "mean_reward": 0.4896,
+        "std": 0.1121,
+        "exec_match": 0.0,
+        "partial_credit": 0.4896
+      },
+      "rule": {
+        "mean_reward": 0.4665,
+        "std": 0.0149,
+        "exec_match": 0.0,
+        "partial_credit": 0.4665
+      },
+      "reinforce": {
+        "mean_reward": 0.5287,
+        "std": 0.1049,
+        "exec_match": 0.0,
+        "partial_credit": 0.5287
+      }
+    },
+    "composite": {
+      "random": {
+        "mean_reward": 0.1212,
+        "std": 0.0446,
+        "exec_match": -0.0467,
+        "partial_credit": 0.4896
+      },
+      "rule": {
+        "mean_reward": 0.1318,
+        "std": 0.007,
+        "exec_match": 0.0,
+        "partial_credit": 0.4665
+      },
+      "reinforce": {
+        "mean_reward": 0.1411,
+        "std": 0.0376,
+        "exec_match": -0.0303,
+        "partial_credit": 0.5287
+      }
+    }
+  }
+}

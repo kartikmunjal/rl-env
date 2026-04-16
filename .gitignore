@@ -9,10 +9,13 @@ venv/
 
 # Data
 data/ecommerce.db
-results/
 *.parquet
 *.pkl
 *.joblib
+
+# Results — track JSON + figures; ignore model checkpoints
+results/**/*.pt
+results/**/*.pth
 
 # Jupyter
 .ipynb_checkpoints/

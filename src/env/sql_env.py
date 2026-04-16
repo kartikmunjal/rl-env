@@ -43,7 +43,7 @@ from .action_space import (
 from .executor import SQLExecutor
 from .schema import Schema
 from .state import NLEncoder, SQLState
-from src.tasks.base import SQLTask, TaskRegistry, load_task_registry
+from src.tasks.base import SQLTask, TaskRegistry, load_task_registry  # noqa: E402
 
 
 class SQLQueryEnv(gym.Env):

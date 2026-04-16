@@ -1,0 +1,691 @@
+{
+  "task_01_simple": {
+    "curve": [
+      {
+        "episode": 100,
+        "eval_mean_reward": 0.14889999999999998,
+        "eval_exec_match": -0.057999999999999996,
+        "elapsed_s": 1.1
+      },
+      {
+        "episode": 200,
+        "eval_mean_reward": 0.1674,
+        "eval_exec_match": -0.032,
+        "elapsed_s": 2.0
+      },
+      {
+        "episode": 300,
+        "eval_mean_reward": 0.16524999999999998,
+        "eval_exec_match": -0.026000000000000006,
+        "elapsed_s": 3.2
+      },
+      {
+        "episode": 400,
+        "eval_mean_reward": 0.17259999999999998,
+        "eval_exec_match": -0.016,
+        "elapsed_s": 4.2
+      },
+      {
+        "episode": 500,
+        "eval_mean_reward": 0.16724999999999998,
+        "eval_exec_match": -0.030000000000000006,
+        "elapsed_s": 5.2
+      },
+      {
+        "episode": 600,
+        "eval_mean_reward": 0.16589999999999996,
+        "eval_exec_match": -0.032,
+        "elapsed_s": 6.3
+      },
+      {
+        "episode": 700,
+        "eval_mean_reward": 0.16929999999999995,
+        "eval_exec_match": -0.026000000000000002,
+        "elapsed_s": 7.2
+      },
+      {
+        "episode": 800,
+        "eval_mean_reward": 0.16754999999999998,
+        "eval_exec_match": -0.03,
+        "elapsed_s": 8.2
+      },
+      {
+        "episode": 900,
+        "eval_mean_reward": 0.16999999999999996,
+        "eval_exec_match": -0.027999999999999997,
+        "elapsed_s": 9.1
+      },
+      {
+        "episode": 1000,
+        "eval_mean_reward": 0.1662,
+        "eval_exec_match": -0.034,
+        "elapsed_s": 10.1
+      },
+      {
+        "episode": 1100,
+        "eval_mean_reward": 0.17509999999999998,
+        "eval_exec_match": -0.016,
+        "elapsed_s": 11.1
+      },
+      {
+        "episode": 1200,
+        "eval_mean_reward": 0.17694999999999997,
+        "eval_exec_match": -0.018000000000000002,
+        "elapsed_s": 12.1
+      },
+      {
+        "episode": 1300,
+        "eval_mean_reward": 0.17204999999999998,
+        "eval_exec_match": -0.018000000000000002,
+        "elapsed_s": 13.1
+      },
+      {
+        "episode": 1400,
+        "eval_mean_reward": 0.17979999999999996,
+        "eval_exec_match": -0.02,
+        "elapsed_s": 14.1
+      },
+      {
+        "episode": 1500,
+        "eval_mean_reward": 0.17669999999999997,
+        "eval_exec_match": -0.022000000000000002,
+        "elapsed_s": 15.1
+      }
+    ],
+    "hacking_observations": [
+      {
+        "task": "task_01_simple",
+        "episode": 500,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: row_distribution, column_coverage"
+      },
+      {
+        "task": "task_01_simple",
+        "episode": 1100,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: row_distribution, column_coverage"
+      },
+      {
+        "task": "task_01_simple",
+        "episode": 1300,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: row_distribution, column_coverage"
+      },
+      {
+        "task": "task_01_simple",
+        "episode": 1500,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: row_distribution, column_coverage"
+      }
+    ]
+  },
+  "task_02_aggregation": {
+    "curve": [
+      {
+        "episode": 100,
+        "eval_mean_reward": 0.07094,
+        "eval_exec_match": -0.032,
+        "elapsed_s": 1.4
+      },
+      {
+        "episode": 200,
+        "eval_mean_reward": 0.07017,
+        "eval_exec_match": -0.026000000000000002,
+        "elapsed_s": 2.9
+      },
+      {
+        "episode": 300,
+        "eval_mean_reward": 0.10637999999999997,
+        "eval_exec_match": -0.02,
+        "elapsed_s": 4.3
+      },
+      {
+        "episode": 400,
+        "eval_mean_reward": 0.09734,
+        "eval_exec_match": -0.02,
+        "elapsed_s": 5.8
+      },
+      {
+        "episode": 500,
+        "eval_mean_reward": 0.08086,
+        "eval_exec_match": -0.028000000000000008,
+        "elapsed_s": 7.2
+      },
+      {
+        "episode": 600,
+        "eval_mean_reward": 0.07665,
+        "eval_exec_match": -0.034,
+        "elapsed_s": 8.5
+      },
+      {
+        "episode": 700,
+        "eval_mean_reward": 0.07816999999999999,
+        "eval_exec_match": -0.03,
+        "elapsed_s": 9.7
+      },
+      {
+        "episode": 800,
+        "eval_mean_reward": 0.06745999999999999,
+        "eval_exec_match": -0.044000000000000004,
+        "elapsed_s": 10.9
+      },
+      {
+        "episode": 900,
+        "eval_mean_reward": 0.0827,
+        "eval_exec_match": -0.027999999999999997,
+        "elapsed_s": 12.1
+      },
+      {
+        "episode": 1000,
+        "eval_mean_reward": 0.07383,
+        "eval_exec_match": -0.04,
+        "elapsed_s": 13.3
+      },
+      {
+        "episode": 1100,
+        "eval_mean_reward": 0.10599,
+        "eval_exec_match": 0.0,
+        "elapsed_s": 14.5
+      },
+      {
+        "episode": 1200,
+        "eval_mean_reward": 0.0673,
+        "eval_exec_match": -0.024000000000000004,
+        "elapsed_s": 15.8
+      },
+      {
+        "episode": 1300,
+        "eval_mean_reward": 0.07908,
+        "eval_exec_match": -0.036000000000000004,
+        "elapsed_s": 17.0
+      },
+      {
+        "episode": 1400,
+        "eval_mean_reward": 0.09094999999999999,
+        "eval_exec_match": -0.02,
+        "elapsed_s": 18.3
+      },
+      {
+        "episode": 1500,
+        "eval_mean_reward": 0.07339,
+        "eval_exec_match": -0.034,
+        "elapsed_s": 19.5
+      }
+    ],
+    "hacking_observations": [
+      {
+        "task": "task_02_aggregation",
+        "episode": 100,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_02_aggregation",
+        "episode": 200,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_02_aggregation",
+        "episode": 300,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_02_aggregation",
+        "episode": 400,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_02_aggregation",
+        "episode": 500,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_02_aggregation",
+        "episode": 600,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_02_aggregation",
+        "episode": 700,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_02_aggregation",
+        "episode": 800,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_02_aggregation",
+        "episode": 900,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_02_aggregation",
+        "episode": 1000,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_02_aggregation",
+        "episode": 1100,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_02_aggregation",
+        "episode": 1200,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_02_aggregation",
+        "episode": 1300,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_02_aggregation",
+        "episode": 1400,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_02_aggregation",
+        "episode": 1500,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      }
+    ]
+  },
+  "task_03_join": {
+    "curve": [
+      {
+        "episode": 100,
+        "eval_mean_reward": 0.13659999999999997,
+        "eval_exec_match": -0.09399999999999999,
+        "elapsed_s": 1.2
+      },
+      {
+        "episode": 200,
+        "eval_mean_reward": 0.16139999999999996,
+        "eval_exec_match": -0.07,
+        "elapsed_s": 2.4
+      },
+      {
+        "episode": 300,
+        "eval_mean_reward": 0.1728,
+        "eval_exec_match": -0.05600000000000001,
+        "elapsed_s": 3.8
+      },
+      {
+        "episode": 400,
+        "eval_mean_reward": 0.1664,
+        "eval_exec_match": -0.06200000000000001,
+        "elapsed_s": 5.2
+      },
+      {
+        "episode": 500,
+        "eval_mean_reward": 0.15699999999999995,
+        "eval_exec_match": -0.07600000000000001,
+        "elapsed_s": 6.5
+      },
+      {
+        "episode": 600,
+        "eval_mean_reward": 0.14519999999999997,
+        "eval_exec_match": -0.08399999999999999,
+        "elapsed_s": 7.8
+      },
+      {
+        "episode": 700,
+        "eval_mean_reward": 0.16899999999999996,
+        "eval_exec_match": -0.048,
+        "elapsed_s": 9.0
+      },
+      {
+        "episode": 800,
+        "eval_mean_reward": 0.17079999999999998,
+        "eval_exec_match": -0.05600000000000001,
+        "elapsed_s": 10.4
+      },
+      {
+        "episode": 900,
+        "eval_mean_reward": 0.158,
+        "eval_exec_match": -0.07200000000000001,
+        "elapsed_s": 11.6
+      },
+      {
+        "episode": 1000,
+        "eval_mean_reward": 0.1632,
+        "eval_exec_match": -0.07,
+        "elapsed_s": 12.8
+      },
+      {
+        "episode": 1100,
+        "eval_mean_reward": 0.15799999999999997,
+        "eval_exec_match": -0.07,
+        "elapsed_s": 14.1
+      },
+      {
+        "episode": 1200,
+        "eval_mean_reward": 0.16959999999999997,
+        "eval_exec_match": -0.062,
+        "elapsed_s": 15.4
+      },
+      {
+        "episode": 1300,
+        "eval_mean_reward": 0.17139999999999997,
+        "eval_exec_match": -0.054000000000000006,
+        "elapsed_s": 16.7
+      },
+      {
+        "episode": 1400,
+        "eval_mean_reward": 0.17079999999999998,
+        "eval_exec_match": -0.05000000000000001,
+        "elapsed_s": 18.0
+      },
+      {
+        "episode": 1500,
+        "eval_mean_reward": 0.1808,
+        "eval_exec_match": -0.038000000000000006,
+        "elapsed_s": 19.3
+      }
+    ],
+    "hacking_observations": []
+  },
+  "task_04_subquery": {
+    "curve": [
+      {
+        "episode": 100,
+        "eval_mean_reward": 0.19354,
+        "eval_exec_match": -0.052000000000000005,
+        "elapsed_s": 1.5
+      },
+      {
+        "episode": 200,
+        "eval_mean_reward": 0.18934,
+        "eval_exec_match": -0.068,
+        "elapsed_s": 3.2
+      },
+      {
+        "episode": 300,
+        "eval_mean_reward": 0.18951999999999994,
+        "eval_exec_match": -0.09599999999999997,
+        "elapsed_s": 4.6
+      },
+      {
+        "episode": 400,
+        "eval_mean_reward": 0.17951999999999999,
+        "eval_exec_match": -0.088,
+        "elapsed_s": 6.1
+      },
+      {
+        "episode": 500,
+        "eval_mean_reward": 0.18208,
+        "eval_exec_match": -0.09399999999999999,
+        "elapsed_s": 7.5
+      },
+      {
+        "episode": 600,
+        "eval_mean_reward": 0.20225999999999997,
+        "eval_exec_match": -0.04,
+        "elapsed_s": 9.0
+      },
+      {
+        "episode": 700,
+        "eval_mean_reward": 0.19777999999999998,
+        "eval_exec_match": -0.052000000000000005,
+        "elapsed_s": 10.6
+      },
+      {
+        "episode": 800,
+        "eval_mean_reward": 0.17776,
+        "eval_exec_match": -0.08599999999999998,
+        "elapsed_s": 12.0
+      },
+      {
+        "episode": 900,
+        "eval_mean_reward": 0.20961999999999997,
+        "eval_exec_match": -0.028000000000000008,
+        "elapsed_s": 13.5
+      },
+      {
+        "episode": 1000,
+        "eval_mean_reward": 0.18481999999999998,
+        "eval_exec_match": -0.074,
+        "elapsed_s": 14.9
+      },
+      {
+        "episode": 1100,
+        "eval_mean_reward": 0.1869,
+        "eval_exec_match": -0.07400000000000001,
+        "elapsed_s": 16.3
+      },
+      {
+        "episode": 1200,
+        "eval_mean_reward": 0.19996,
+        "eval_exec_match": -0.064,
+        "elapsed_s": 17.7
+      },
+      {
+        "episode": 1300,
+        "eval_mean_reward": 0.18403999999999995,
+        "eval_exec_match": -0.064,
+        "elapsed_s": 19.2
+      },
+      {
+        "episode": 1400,
+        "eval_mean_reward": 0.20202,
+        "eval_exec_match": -0.04,
+        "elapsed_s": 20.6
+      },
+      {
+        "episode": 1500,
+        "eval_mean_reward": 0.21047999999999997,
+        "eval_exec_match": -0.028000000000000008,
+        "elapsed_s": 22.1
+      }
+    ],
+    "hacking_observations": [
+      {
+        "task": "task_04_subquery",
+        "episode": 100,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_04_subquery",
+        "episode": 200,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_04_subquery",
+        "episode": 300,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_04_subquery",
+        "episode": 400,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_04_subquery",
+        "episode": 500,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_04_subquery",
+        "episode": 600,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_04_subquery",
+        "episode": 700,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_04_subquery",
+        "episode": 800,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_04_subquery",
+        "episode": 900,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_04_subquery",
+        "episode": 1000,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_04_subquery",
+        "episode": 1100,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_04_subquery",
+        "episode": 1200,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_04_subquery",
+        "episode": 1300,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_04_subquery",
+        "episode": 1400,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      },
+      {
+        "task": "task_04_subquery",
+        "episode": 1500,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      }
+    ]
+  },
+  "task_05_window": {
+    "curve": [
+      {
+        "episode": 100,
+        "eval_mean_reward": 0.11961999999999998,
+        "eval_exec_match": -0.054000000000000006,
+        "elapsed_s": 1.4
+      },
+      {
+        "episode": 200,
+        "eval_mean_reward": 0.13024000000000002,
+        "eval_exec_match": -0.046000000000000006,
+        "elapsed_s": 2.9
+      },
+      {
+        "episode": 300,
+        "eval_mean_reward": 0.12856,
+        "eval_exec_match": -0.048,
+        "elapsed_s": 4.4
+      },
+      {
+        "episode": 400,
+        "eval_mean_reward": 0.12022000000000002,
+        "eval_exec_match": -0.05600000000000001,
+        "elapsed_s": 5.9
+      },
+      {
+        "episode": 500,
+        "eval_mean_reward": 0.12138,
+        "eval_exec_match": -0.042,
+        "elapsed_s": 7.4
+      },
+      {
+        "episode": 600,
+        "eval_mean_reward": 0.1295,
+        "eval_exec_match": -0.04,
+        "elapsed_s": 8.8
+      },
+      {
+        "episode": 700,
+        "eval_mean_reward": 0.1263,
+        "eval_exec_match": -0.042,
+        "elapsed_s": 10.3
+      },
+      {
+        "episode": 800,
+        "eval_mean_reward": 0.13269999999999998,
+        "eval_exec_match": -0.044000000000000004,
+        "elapsed_s": 11.8
+      },
+      {
+        "episode": 900,
+        "eval_mean_reward": 0.12966,
+        "eval_exec_match": -0.034,
+        "elapsed_s": 13.2
+      },
+      {
+        "episode": 1000,
+        "eval_mean_reward": 0.12942,
+        "eval_exec_match": -0.05200000000000001,
+        "elapsed_s": 14.7
+      },
+      {
+        "episode": 1100,
+        "eval_mean_reward": 0.13712,
+        "eval_exec_match": -0.032,
+        "elapsed_s": 16.1
+      },
+      {
+        "episode": 1200,
+        "eval_mean_reward": 0.13332,
+        "eval_exec_match": -0.038000000000000006,
+        "elapsed_s": 17.7
+      },
+      {
+        "episode": 1300,
+        "eval_mean_reward": 0.13133999999999998,
+        "eval_exec_match": -0.04000000000000001,
+        "elapsed_s": 19.3
+      },
+      {
+        "episode": 1400,
+        "eval_mean_reward": 0.12798,
+        "eval_exec_match": -0.034,
+        "elapsed_s": 20.8
+      },
+      {
+        "episode": 1500,
+        "eval_mean_reward": 0.13276,
+        "eval_exec_match": -0.044000000000000004,
+        "elapsed_s": 22.3
+      }
+    ],
+    "hacking_observations": [
+      {
+        "task": "task_05_window",
+        "episode": 1500,
+        "severity": 0.667,
+        "description": "REWARD HACKING DETECTED: 2/3 signals fired simultaneously. Triggered: operator_diversity, column_coverage"
+      }
+    ]
+  }
+}

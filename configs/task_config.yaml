@@ -81,8 +81,8 @@ tasks:
       - FROM_TABLE
       - WHERE_COL
       - WHERE_OP_IN         # fixed to IN
+      - SUBQ_FROM_TABLE     # must precede SUBQ_SELECT_COL so table is known
       - SUBQ_SELECT_COL
-      - SUBQ_FROM_TABLE
       - SUBQ_JOIN_TABLE
       - SUBQ_JOIN_KEY_LEFT
       - SUBQ_JOIN_KEY_RIGHT
@@ -106,12 +106,12 @@ tasks:
       filter on the rank value. Tests understanding of window semantics
       vs GROUP BY (a common agent confusion point documented in hacking analysis).
     active_phases:
+      - FROM_TABLE          # must be first so partition/order col masks can use it
       - SELECT_COLS
       - WINDOW_FN
       - WINDOW_PARTITION_COL
       - WINDOW_ORDER_COL
       - WINDOW_ORDER_DIR
-      - FROM_TABLE
       - WHERE_COL
       - WHERE_OP
       - WHERE_VAL
