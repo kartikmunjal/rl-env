@@ -1,0 +1,98 @@
+[
+  {
+    "nl": "How many orders has each customer placed",
+    "gold_sql": "SELECT customer_id, COUNT(*) AS order_count FROM orders GROUP BY customer_id ORDER BY order_count DESC",
+    "target_table": "orders",
+    "group_col": "customer_id",
+    "agg_fn": "COUNT",
+    "agg_col": "*",
+    "having_op": null,
+    "having_val": null,
+    "order_col": "agg_val",
+    "order_dir": "DESC"
+  },
+  {
+    "nl": "What is the total revenue per product category",
+    "gold_sql": "SELECT category, SUM(price) AS total_revenue FROM products GROUP BY category ORDER BY total_revenue DESC",
+    "target_table": "products",
+    "group_col": "category",
+    "agg_fn": "SUM",
+    "agg_col": "price",
+    "having_op": null,
+    "having_val": null,
+    "order_col": "agg_val",
+    "order_dir": "DESC"
+  },
+  {
+    "nl": "Which cities have more than 5 customers",
+    "gold_sql": "SELECT city, COUNT(*) AS customer_count FROM customers GROUP BY city HAVING COUNT(*) > 5 ORDER BY customer_count DESC",
+    "target_table": "customers",
+    "group_col": "city",
+    "agg_fn": "COUNT",
+    "agg_col": "*",
+    "having_op": ">",
+    "having_val": 5,
+    "order_col": "agg_val",
+    "order_dir": "DESC"
+  },
+  {
+    "nl": "Show the average product price by category",
+    "gold_sql": "SELECT category, AVG(price) AS avg_price FROM products GROUP BY category ORDER BY avg_price DESC",
+    "target_table": "products",
+    "group_col": "category",
+    "agg_fn": "AVG",
+    "agg_col": "price",
+    "having_op": null,
+    "having_val": null,
+    "order_col": "agg_val",
+    "order_dir": "DESC"
+  },
+  {
+    "nl": "Find product categories with average price above 50",
+    "gold_sql": "SELECT category, AVG(price) AS avg_price FROM products GROUP BY category HAVING AVG(price) > 50 ORDER BY avg_price DESC",
+    "target_table": "products",
+    "group_col": "category",
+    "agg_fn": "AVG",
+    "agg_col": "price",
+    "having_op": ">",
+    "having_val": 50,
+    "order_col": "agg_val",
+    "order_dir": "DESC"
+  },
+  {
+    "nl": "Count the number of customers in each tier",
+    "gold_sql": "SELECT tier, COUNT(*) AS count FROM customers GROUP BY tier ORDER BY count DESC",
+    "target_table": "customers",
+    "group_col": "tier",
+    "agg_fn": "COUNT",
+    "agg_col": "*",
+    "having_op": null,
+    "having_val": null,
+    "order_col": "agg_val",
+    "order_dir": "DESC"
+  },
+  {
+    "nl": "Show maximum stock level for each product category",
+    "gold_sql": "SELECT category, MAX(stock) AS max_stock FROM products GROUP BY category ORDER BY max_stock DESC",
+    "target_table": "products",
+    "group_col": "category",
+    "agg_fn": "MAX",
+    "agg_col": "stock",
+    "having_op": null,
+    "having_val": null,
+    "order_col": "agg_val",
+    "order_dir": "DESC"
+  },
+  {
+    "nl": "Which cities have fewer than 3 customers",
+    "gold_sql": "SELECT city, COUNT(*) AS customer_count FROM customers GROUP BY city HAVING COUNT(*) < 3 ORDER BY customer_count ASC",
+    "target_table": "customers",
+    "group_col": "city",
+    "agg_fn": "COUNT",
+    "agg_col": "*",
+    "having_op": "<",
+    "having_val": 3,
+    "order_col": "agg_val",
+    "order_dir": "ASC"
+  }
+]

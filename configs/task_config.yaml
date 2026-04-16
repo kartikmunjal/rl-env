@@ -1,0 +1,125 @@
+# ============================================================
+# Task definitions — 5 SQL tasks of increasing complexity
+# phase names map to BuildPhase enum in src/env/action_space.py
+# ============================================================
+
+tasks:
+  - id: task_01_simple
+    name: "Simple SELECT with WHERE"
+    description: >
+      Single-table projection and equality/comparison filter.
+      No aggregation, no joins. Tests basic schema grounding and
+      operator selection from natural language.
+    active_phases:
+      - SELECT_COLS
+      - FROM_TABLE
+      - WHERE_COL
+      - WHERE_OP
+      - WHERE_VAL
+    nl_queries_file: configs/tasks/task_01_queries.json
+    max_episode_steps: 5
+    difficulty: 1
+    gold_sql_template: "SELECT {cols} FROM {table} WHERE {col} {op} {val}"
+
+  - id: task_02_aggregation
+    name: "Aggregation with GROUP BY and HAVING"
+    description: >
+      Introduces aggregate functions (COUNT, SUM, AVG, MIN, MAX),
+      GROUP BY grouping, optional HAVING filter, and ORDER BY.
+      Tests understanding of two-phase query execution semantics.
+    active_phases:
+      - SELECT_COLS
+      - FROM_TABLE
+      - AGG_FN
+      - GROUP_BY_COL
+      - HAVING_OP
+      - HAVING_VAL
+      - ORDER_BY_COL
+      - ORDER_DIR
+    nl_queries_file: configs/tasks/task_02_queries.json
+    max_episode_steps: 8
+    difficulty: 2
+    gold_sql_template: >
+      SELECT {group_col}, {agg_fn}({agg_col}) AS agg_val
+      FROM {table}
+      GROUP BY {group_col}
+      HAVING {agg_fn}({agg_col}) {having_op} {having_val}
+      ORDER BY agg_val {order_dir}
+
+  - id: task_03_join
+    name: "Two-table INNER JOIN"
+    description: >
+      Requires selecting the correct foreign key pair for a join
+      across two tables. WHERE filter applied after join.
+      Tests relational reasoning and schema FK awareness.
+    active_phases:
+      - SELECT_COLS
+      - FROM_TABLE
+      - JOIN_TABLE
+      - JOIN_KEY_LEFT
+      - JOIN_KEY_RIGHT
+      - WHERE_COL
+      - WHERE_OP
+      - WHERE_VAL
+    nl_queries_file: configs/tasks/task_03_queries.json
+    max_episode_steps: 8
+    difficulty: 3
+    gold_sql_template: >
+      SELECT {cols}
+      FROM {from_table}
+      INNER JOIN {join_table} ON {from_table}.{left_key} = {join_table}.{right_key}
+      WHERE {filter_col} {op} {val}
+
+  - id: task_04_subquery
+    name: "IN-clause Subquery"
+    description: >
+      Outer query with an IN-clause subquery. The subquery itself is
+      a slot-filling sub-MDP (5 additional phases). Tests hierarchical
+      query composition and multi-step credit assignment.
+    active_phases:
+      - SELECT_COLS
+      - FROM_TABLE
+      - WHERE_COL
+      - WHERE_OP_IN         # fixed to IN
+      - SUBQ_SELECT_COL
+      - SUBQ_FROM_TABLE
+      - SUBQ_JOIN_TABLE
+      - SUBQ_JOIN_KEY_LEFT
+      - SUBQ_JOIN_KEY_RIGHT
+      - SUBQ_WHERE_COL
+    nl_queries_file: configs/tasks/task_04_queries.json
+    max_episode_steps: 10
+    difficulty: 4
+    gold_sql_template: >
+      SELECT {cols} FROM {table}
+      WHERE {col} IN (
+        SELECT DISTINCT {subq_col}
+        FROM {subq_from}
+        INNER JOIN {subq_join} ON {subq_from}.{left_key} = {subq_join}.{right_key}
+        WHERE {subq_where_col} = '{subq_where_val}'
+      )
+
+  - id: task_05_window
+    name: "Window Function with RANK"
+    description: >
+      RANK() OVER (PARTITION BY ... ORDER BY ...) with an outer WHERE
+      filter on the rank value. Tests understanding of window semantics
+      vs GROUP BY (a common agent confusion point documented in hacking analysis).
+    active_phases:
+      - SELECT_COLS
+      - WINDOW_FN
+      - WINDOW_PARTITION_COL
+      - WINDOW_ORDER_COL
+      - WINDOW_ORDER_DIR
+      - FROM_TABLE
+      - WHERE_COL
+      - WHERE_OP
+      - WHERE_VAL
+    nl_queries_file: configs/tasks/task_05_queries.json
+    max_episode_steps: 9
+    difficulty: 5
+    gold_sql_template: >
+      SELECT {cols},
+        {window_fn}() OVER (PARTITION BY {partition_col} ORDER BY {order_col} {order_dir}) AS rnk
+      FROM {table}
+      WHERE rnk {op} {val}

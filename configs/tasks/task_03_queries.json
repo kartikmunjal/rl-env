@@ -1,0 +1,74 @@
+[
+  {
+    "nl": "Show all orders with the customer name who placed them",
+    "gold_sql": "SELECT c.name, o.order_id, o.order_date, o.status FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id",
+    "from_table": "customers",
+    "join_table": "orders",
+    "left_key": "customer_id",
+    "right_key": "customer_id",
+    "select_cols": ["c.name", "o.order_id", "o.order_date", "o.status"],
+    "where_col": null,
+    "where_op": null,
+    "where_val": null
+  },
+  {
+    "nl": "Find names of customers who placed delivered orders",
+    "gold_sql": "SELECT c.name, o.order_date FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id WHERE o.status = 'delivered'",
+    "from_table": "customers",
+    "join_table": "orders",
+    "left_key": "customer_id",
+    "right_key": "customer_id",
+    "select_cols": ["c.name", "o.order_date"],
+    "where_col": "status",
+    "where_op": "=",
+    "where_val": "delivered"
+  },
+  {
+    "nl": "Show product names and quantities for each order item",
+    "gold_sql": "SELECT p.name, oi.quantity, oi.unit_price FROM products p INNER JOIN order_items oi ON p.product_id = oi.product_id",
+    "from_table": "products",
+    "join_table": "order_items",
+    "left_key": "product_id",
+    "right_key": "product_id",
+    "select_cols": ["p.name", "oi.quantity", "oi.unit_price"],
+    "where_col": null,
+    "where_op": null,
+    "where_val": null
+  },
+  {
+    "nl": "Find customers from New York and their orders",
+    "gold_sql": "SELECT c.name, o.order_id, o.status FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id WHERE c.city = 'New York'",
+    "from_table": "customers",
+    "join_table": "orders",
+    "left_key": "customer_id",
+    "right_key": "customer_id",
+    "select_cols": ["c.name", "o.order_id", "o.status"],
+    "where_col": "city",
+    "where_op": "=",
+    "where_val": "New York"
+  },
+  {
+    "nl": "List electronics products that have been ordered",
+    "gold_sql": "SELECT p.name, oi.quantity FROM products p INNER JOIN order_items oi ON p.product_id = oi.product_id WHERE p.category = 'electronics'",
+    "from_table": "products",
+    "join_table": "order_items",
+    "left_key": "product_id",
+    "right_key": "product_id",
+    "select_cols": ["p.name", "oi.quantity"],
+    "where_col": "category",
+    "where_op": "=",
+    "where_val": "electronics"
+  },
+  {
+    "nl": "Show gold tier customers and their pending orders",
+    "gold_sql": "SELECT c.name, c.tier, o.order_id FROM customers c INNER JOIN orders o ON c.customer_id = o.customer_id WHERE c.tier = 'gold' AND o.status = 'pending'",
+    "from_table": "customers",
+    "join_table": "orders",
+    "left_key": "customer_id",
+    "right_key": "customer_id",
+    "select_cols": ["c.name", "c.tier", "o.order_id"],
+    "where_col": "tier",
+    "where_op": "=",
+    "where_val": "gold"
+  }
+]

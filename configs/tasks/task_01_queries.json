@@ -1,0 +1,92 @@
+[
+  {
+    "nl": "Show me all customers from New York",
+    "gold_sql": "SELECT name, city FROM customers WHERE city = 'New York'",
+    "target_table": "customers",
+    "target_cols": ["name", "city"],
+    "where_col": "city",
+    "where_op": "=",
+    "where_val": "New York"
+  },
+  {
+    "nl": "List all gold tier customers",
+    "gold_sql": "SELECT name, tier FROM customers WHERE tier = 'gold'",
+    "target_table": "customers",
+    "target_cols": ["name", "tier"],
+    "where_col": "tier",
+    "where_op": "=",
+    "where_val": "gold"
+  },
+  {
+    "nl": "Which products cost more than 100 dollars",
+    "gold_sql": "SELECT name, price FROM products WHERE price > 100",
+    "target_table": "products",
+    "target_cols": ["name", "price"],
+    "where_col": "price",
+    "where_op": ">",
+    "where_val": 100
+  },
+  {
+    "nl": "Find all electronics category products",
+    "gold_sql": "SELECT name, category, price FROM products WHERE category = 'electronics'",
+    "target_table": "products",
+    "target_cols": ["name", "category", "price"],
+    "where_col": "category",
+    "where_op": "=",
+    "where_val": "electronics"
+  },
+  {
+    "nl": "Show all delivered orders",
+    "gold_sql": "SELECT order_id, customer_id, order_date FROM orders WHERE status = 'delivered'",
+    "target_table": "orders",
+    "target_cols": ["order_id", "customer_id", "order_date"],
+    "where_col": "status",
+    "where_op": "=",
+    "where_val": "delivered"
+  },
+  {
+    "nl": "List customers from Los Angeles",
+    "gold_sql": "SELECT name, email FROM customers WHERE city = 'Los Angeles'",
+    "target_table": "customers",
+    "target_cols": ["name", "email"],
+    "where_col": "city",
+    "where_op": "=",
+    "where_val": "Los Angeles"
+  },
+  {
+    "nl": "Which products have less than 10 units in stock",
+    "gold_sql": "SELECT name, stock FROM products WHERE stock < 10",
+    "target_table": "products",
+    "target_cols": ["name", "stock"],
+    "where_col": "stock",
+    "where_op": "<",
+    "where_val": 10
+  },
+  {
+    "nl": "Find all cancelled orders",
+    "gold_sql": "SELECT order_id, customer_id, order_date FROM orders WHERE status = 'cancelled'",
+    "target_table": "orders",
+    "target_cols": ["order_id", "customer_id", "order_date"],
+    "where_col": "status",
+    "where_op": "=",
+    "where_val": "cancelled"
+  },
+  {
+    "nl": "Show silver tier customers",
+    "gold_sql": "SELECT name, email, city FROM customers WHERE tier = 'silver'",
+    "target_table": "customers",
+    "target_cols": ["name", "email", "city"],
+    "where_col": "tier",
+    "where_op": "=",
+    "where_val": "silver"
+  },
+  {
+    "nl": "List products in the books category",
+    "gold_sql": "SELECT name, price FROM products WHERE category = 'books'",
+    "target_table": "products",
+    "target_cols": ["name", "price"],
+    "where_col": "category",
+    "where_op": "=",
+    "where_val": "books"
+  }
+]

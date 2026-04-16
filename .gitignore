@@ -1,0 +1,32 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.env
+
+# Data
+data/ecommerce.db
+results/
+*.parquet
+*.pkl
+*.joblib
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# macOS
+.DS_Store
+
+# Models
+models/
+*.pt
+*.pth
+
+# Logs
+*.log
+wandb/
+runs/

@@ -1,0 +1,81 @@
+# ============================================================
+# Reward function configuration
+# See src/rewards/ for implementations.
+# See research_notes/reward_hacking_report.md for hacking analysis.
+# ============================================================
+
+# Which reward function to use for training (exact | execution | partial | composite)
+active_reward: composite
+
+# ---- R1: Exact Match ----------------------------------------
+exact_match:
+  # Normalization pipeline applied before string comparison
+  lowercase: true
+  strip_aliases: true          # remove "AS alias" and "table." prefixes
+  sort_select_cols: true       # column ordering should not matter
+  collapse_whitespace: true
+
+# ---- R2: Execution Match ------------------------------------
+execution_match:
+  # Partial overlap: if |intersection| / |union| >= threshold, award overlap_reward
+  # Design decision: 0.5 partial score for near-correct queries
+  # (not in standard Spider benchmark — see design_decisions.md §R2)
+  overlap_threshold: 0.50
+  overlap_reward: 0.50
+
+  # Penalty for timeout or syntax error (negative to push policy away from crashes)
+  # Design decision: -0.1 not 0.0 to avoid stagnation (H2.2)
+  error_penalty: -0.10
+
+  # Efficiency penalty: fires when actual_rows > multiplier * expected_rows
+  # Computed on COUNT(*) BEFORE any LIMIT clause (counter-measure for H4.2)
+  efficiency_multiplier: 5.0
+  efficiency_penalty_max: 0.20    # cap the penalty
+
+# ---- R3: Partial Credit ------------------------------------
+partial_credit:
+  # Component weights (must sum to 1.0)
+  # Design decision: columns + tables + WHERE = 65% of score
+  # (semantic core); agg/sort are secondary
+  weights:
+    tables: 0.20
+    columns: 0.25
+    where: 0.20
+    aggregation: 0.15
+    group_by: 0.10
+    order_by: 0.10
+
+  # Overlap metric for columns and tables (Jaccard by default)
+  # CRITICAL: use Jaccard (|∩|/|∪|) not Recall (|∩|/|gold|)
+  # Bug with Recall is documented as H3.1 in hacking report
+  overlap_metric: jaccard   # options: jaccard | recall | precision | f1
+
+# ---- R4: Composite ------------------------------------------
+composite:
+  # Additive combination: w_exec * R2 + w_partial * R3 + w_exact * R1 - w_eff * penalty
+  # Weights sum to 1.0 (w_eff is a separate penalty coefficient)
+  w_exec: 0.50
+  w_partial: 0.30
+  w_exact: 0.15
+  w_eff: 0.05
+
+  # Inherit sub-reward configs from above
+  use_efficiency_penalty: true
+
+# ---- Weight ablation profiles (for experiments/02) ----------
+composite_ablations:
+  high_exec:
+    w_exec: 0.70
+    w_partial: 0.20
+    w_exact: 0.05
+    w_eff: 0.05
+  high_partial:
+    w_exec: 0.30
+    w_partial: 0.50
+    w_exact: 0.15
+    w_eff: 0.05
+  balanced:
+    w_exec: 0.50
+    w_partial: 0.30
+    w_exact: 0.15
+    w_eff: 0.05

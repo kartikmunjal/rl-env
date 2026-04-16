@@ -1,0 +1,64 @@
+[
+  {
+    "nl": "Rank customers within each city by their signup date",
+    "gold_sql": "SELECT name, city, RANK() OVER (PARTITION BY city ORDER BY signup_date) AS signup_rank FROM customers",
+    "from_table": "customers",
+    "window_fn": "RANK",
+    "partition_col": "city",
+    "order_col": "signup_date",
+    "order_dir": "ASC",
+    "select_cols": ["name", "city"],
+    "outer_where_col": null,
+    "outer_where_val": null
+  },
+  {
+    "nl": "Find the top 2 most recently signed up customers in each city",
+    "gold_sql": "SELECT name, city, signup_date FROM (SELECT name, city, signup_date, RANK() OVER (PARTITION BY city ORDER BY signup_date DESC) AS rnk FROM customers) t WHERE rnk <= 2",
+    "from_table": "customers",
+    "window_fn": "RANK",
+    "partition_col": "city",
+    "order_col": "signup_date",
+    "order_dir": "DESC",
+    "select_cols": ["name", "city", "signup_date"],
+    "outer_where_col": "rnk",
+    "outer_where_op": "<=",
+    "outer_where_val": 2
+  },
+  {
+    "nl": "Rank products within each category by price from lowest to highest",
+    "gold_sql": "SELECT name, category, price, RANK() OVER (PARTITION BY category ORDER BY price ASC) AS price_rank FROM products",
+    "from_table": "products",
+    "window_fn": "RANK",
+    "partition_col": "category",
+    "order_col": "price",
+    "order_dir": "ASC",
+    "select_cols": ["name", "category", "price"],
+    "outer_where_col": null,
+    "outer_where_val": null
+  },
+  {
+    "nl": "Show the most expensive product in each category",
+    "gold_sql": "SELECT name, category, price FROM (SELECT name, category, price, RANK() OVER (PARTITION BY category ORDER BY price DESC) AS rnk FROM products) t WHERE rnk = 1",
+    "from_table": "products",
+    "window_fn": "RANK",
+    "partition_col": "category",
+    "order_col": "price",
+    "order_dir": "DESC",
+    "select_cols": ["name", "category", "price"],
+    "outer_where_col": "rnk",
+    "outer_where_op": "=",
+    "outer_where_val": 1
+  },
+  {
+    "nl": "Assign row numbers to orders within each customer sorted by date",
+    "gold_sql": "SELECT order_id, customer_id, order_date, ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date ASC) AS order_seq FROM orders",
+    "from_table": "orders",
+    "window_fn": "ROW_NUMBER",
+    "partition_col": "customer_id",
+    "order_col": "order_date",
+    "order_dir": "ASC",
+    "select_cols": ["order_id", "customer_id", "order_date"],
+    "outer_where_col": null,
+    "outer_where_val": null
+  }
+]

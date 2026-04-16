@@ -1,0 +1,75 @@
+# ============================================================
+# Agent configuration — random, rule-based, and REINFORCE
+# ============================================================
+
+random_agent:
+  seed: 42    # for reproducible random baselines
+
+rule_agent:
+  # Keyword → SQL slot lookup tables
+  # Used by src/agents/rule_agent.py
+  # Extend these to improve rule-based upper bound
+  table_keywords:
+    customer: customers
+    order: orders
+    product: products
+    item: order_items
+
+  agg_keywords:
+    "how many": COUNT
+    "count": COUNT
+    "total": SUM
+    "sum": SUM
+    "average": AVG
+    "avg": AVG
+    "maximum": MAX
+    "highest": MAX
+    "minimum": MIN
+    "lowest": MIN
+
+  op_keywords:
+    "more than": ">"
+    "greater than": ">"
+    "at least": ">="
+    "less than": "<"
+    "fewer than": "<"
+    "at most": "<="
+    "equal to": "="
+    "is": "="
+    "called": "="
+    "named": "="
+    "from": "="        # "customers from London" → city = 'London'
+
+  order_keywords:
+    "highest": DESC
+    "most": DESC
+    "top": DESC
+    "lowest": ASC
+    "least": ASC
+    "bottom": ASC
+
+reinforce_agent:
+  # Network architecture
+  hidden_dim: 256
+  hidden_dim2: 128
+  dropout: 0.10
+
+  # Training
+  learning_rate: 3.0e-4
+  baseline_lr: 1.0e-3       # Separate LR for value baseline network
+  gamma: 1.0                # No discounting (short episodes, terminal reward only)
+  # Design decision: gamma=1.0 because reward only at episode end
+  # and shorter episodes should not be penalized (see design_decisions.md §D2)
+
+  max_episodes: 2000
+  eval_every: 100
+  eval_episodes: 100
+
+  # Gradient clipping
+  grad_clip: 0.5
+
+  # Entropy bonus (encourages exploration)
+  entropy_coeff: 0.01
+
+  seed: 42
+  device: cpu              # Use "cuda" if GPU available

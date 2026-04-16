@@ -1,0 +1,66 @@
+[
+  {
+    "nl": "Find customers who have placed at least one order",
+    "gold_sql": "SELECT name FROM customers WHERE customer_id IN (SELECT DISTINCT customer_id FROM orders)",
+    "outer_table": "customers",
+    "outer_col": "customer_id",
+    "subq_select_col": "customer_id",
+    "subq_from": "orders",
+    "subq_join": null,
+    "subq_where_col": null,
+    "subq_where_val": null
+  },
+  {
+    "nl": "List customers who ordered a product in the books category",
+    "gold_sql": "SELECT DISTINCT c.name FROM customers c WHERE c.customer_id IN (SELECT o.customer_id FROM orders o INNER JOIN order_items oi ON o.order_id = oi.order_id INNER JOIN products p ON oi.product_id = p.product_id WHERE p.category = 'books')",
+    "outer_table": "customers",
+    "outer_col": "customer_id",
+    "subq_select_col": "customer_id",
+    "subq_from": "orders",
+    "subq_join": "order_items",
+    "subq_join_key_left": "order_id",
+    "subq_join_key_right": "order_id",
+    "subq_where_col": "category",
+    "subq_where_val": "books"
+  },
+  {
+    "nl": "Show customers who have not placed any order",
+    "gold_sql": "SELECT name FROM customers WHERE customer_id NOT IN (SELECT DISTINCT customer_id FROM orders)",
+    "outer_table": "customers",
+    "outer_col": "customer_id",
+    "subq_select_col": "customer_id",
+    "subq_from": "orders",
+    "subq_join": null,
+    "subq_where_col": null,
+    "subq_where_val": null,
+    "negated": true
+  },
+  {
+    "nl": "Find products that appear in electronics orders",
+    "gold_sql": "SELECT p.name FROM products p WHERE p.product_id IN (SELECT oi.product_id FROM order_items oi INNER JOIN products p2 ON oi.product_id = p2.product_id WHERE p2.category = 'electronics')",
+    "outer_table": "products",
+    "outer_col": "product_id",
+    "subq_select_col": "product_id",
+    "subq_from": "order_items",
+    "subq_join": "products",
+    "subq_join_key_left": "product_id",
+    "subq_join_key_right": "product_id",
+    "subq_where_col": "category",
+    "subq_where_val": "electronics"
+  },
+  {
+    "nl": "List gold customers who ordered clothing items",
+    "gold_sql": "SELECT c.name FROM customers c WHERE c.tier = 'gold' AND c.customer_id IN (SELECT o.customer_id FROM orders o INNER JOIN order_items oi ON o.order_id = oi.order_id INNER JOIN products p ON oi.product_id = p.product_id WHERE p.category = 'clothing')",
+    "outer_table": "customers",
+    "outer_col": "customer_id",
+    "outer_where_col": "tier",
+    "outer_where_val": "gold",
+    "subq_select_col": "customer_id",
+    "subq_from": "orders",
+    "subq_join": "order_items",
+    "subq_join_key_left": "order_id",
+    "subq_join_key_right": "order_id",
+    "subq_where_col": "category",
+    "subq_where_val": "clothing"
+  }
+]
