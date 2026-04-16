@@ -1,0 +1,420 @@
+{
+  "task_02_aggregation": {
+    "balanced": {
+      "weights": {
+        "w_exec": 0.5,
+        "w_partial": 0.3,
+        "w_exact": 0.15,
+        "w_eff": 0.05
+      },
+      "curve": [
+        {
+          "episode": 100,
+          "mean_reward": 0.07094,
+          "std_reward": 0.03453225159180907,
+          "exec_match": -0.032,
+          "partial_credit": 0.2978,
+          "elapsed_s": 2.3,
+          "composite_alerts": 1
+        },
+        {
+          "episode": 200,
+          "mean_reward": 0.07017,
+          "std_reward": 0.03790153163132065,
+          "exec_match": -0.026000000000000002,
+          "partial_credit": 0.28990000000000005,
+          "elapsed_s": 4.3,
+          "composite_alerts": 1
+        },
+        {
+          "episode": 300,
+          "mean_reward": 0.10637999999999997,
+          "std_reward": 0.05772014899495669,
+          "exec_match": -0.02,
+          "partial_credit": 0.3946,
+          "elapsed_s": 6.2,
+          "composite_alerts": 1
+        },
+        {
+          "episode": 400,
+          "mean_reward": 0.09734,
+          "std_reward": 0.04696631133056971,
+          "exec_match": -0.02,
+          "partial_credit": 0.3618,
+          "elapsed_s": 8.2,
+          "composite_alerts": 1
+        },
+        {
+          "episode": 500,
+          "mean_reward": 0.08086,
+          "std_reward": 0.049798096349157765,
+          "exec_match": -0.028000000000000008,
+          "partial_credit": 0.32419999999999993,
+          "elapsed_s": 9.8,
+          "composite_alerts": 1
+        },
+        {
+          "episode": 600,
+          "mean_reward": 0.07665,
+          "std_reward": 0.04804011344699344,
+          "exec_match": -0.034,
+          "partial_credit": 0.31749999999999995,
+          "elapsed_s": 11.4,
+          "composite_alerts": 1
+        }
+      ],
+      "final_mean_reward": 0.07665,
+      "final_exec_match": -0.034,
+      "final_partial_credit": 0.31749999999999995,
+      "total_hacking_alerts": 6,
+      "first_alert_episode": 100
+    },
+    "high_exec": {
+      "weights": {
+        "w_exec": 0.7,
+        "w_partial": 0.2,
+        "w_exact": 0.05,
+        "w_eff": 0.05
+      },
+      "curve": [
+        {
+          "episode": 100,
+          "mean_reward": 0.03544000000000001,
+          "std_reward": 0.03557311344259875,
+          "exec_match": -0.032,
+          "partial_credit": 0.3012,
+          "elapsed_s": 1.7,
+          "composite_alerts": 1
+        },
+        {
+          "episode": 200,
+          "mean_reward": 0.03834000000000001,
+          "std_reward": 0.032108945793968384,
+          "exec_match": -0.022000000000000002,
+          "partial_credit": 0.28569999999999995,
+          "elapsed_s": 3.4,
+          "composite_alerts": 1
+        },
+        {
+          "episode": 300,
+          "mean_reward": 0.046880000000000005,
+          "std_reward": 0.049736763063150786,
+          "exec_match": -0.03,
+          "partial_credit": 0.3514,
+          "elapsed_s": 5.2,
+          "composite_alerts": 1
+        },
+        {
+          "episode": 400,
+          "mean_reward": 0.04832000000000001,
+          "std_reward": 0.037439252129282716,
+          "exec_match": -0.024000000000000004,
+          "partial_credit": 0.3336,
+          "elapsed_s": 7.0,
+          "composite_alerts": 1
+        },
+        {
+          "episode": 500,
+          "mean_reward": 0.03684000000000001,
+          "std_reward": 0.046783056762037256,
+          "exec_match": -0.036000000000000004,
+          "partial_credit": 0.3222,
+          "elapsed_s": 8.8,
+          "composite_alerts": 1
+        },
+        {
+          "episode": 600,
+          "mean_reward": 0.03832000000000001,
+          "std_reward": 0.04221489784424451,
+          "exec_match": -0.032,
+          "partial_credit": 0.3126,
+          "elapsed_s": 10.6,
+          "composite_alerts": 1
+        }
+      ],
+      "final_mean_reward": 0.03832000000000001,
+      "final_exec_match": -0.032,
+      "final_partial_credit": 0.3126,
+      "total_hacking_alerts": 6,
+      "first_alert_episode": 100
+    },
+    "high_partial": {
+      "weights": {
+        "w_exec": 0.3,
+        "w_partial": 0.5,
+        "w_exact": 0.15,
+        "w_eff": 0.05
+      },
+      "curve": [
+        {
+          "episode": 100,
+          "mean_reward": 0.1369,
+          "std_reward": 0.04942054228759535,
+          "exec_match": -0.032,
+          "partial_credit": 0.2978,
+          "elapsed_s": 1.9,
+          "composite_alerts": 1
+        },
+        {
+          "episode": 200,
+          "mean_reward": 0.1397,
+          "std_reward": 0.06138534026948128,
+          "exec_match": -0.028000000000000004,
+          "partial_credit": 0.30339999999999995,
+          "elapsed_s": 3.2,
+          "composite_alerts": 1
+        },
+        {
+          "episode": 300,
+          "mean_reward": 0.19365000000000002,
+          "std_reward": 0.09954799093904407,
+          "exec_match": -0.016,
+          "partial_credit": 0.40090000000000003,
+          "elapsed_s": 4.8,
+          "composite_alerts": 1
+        },
+        {
+          "episode": 400,
+          "mean_reward": 0.17680000000000004,
+          "std_reward": 0.07820652146720246,
+          "exec_match": -0.02,
+          "partial_credit": 0.368,
+          "elapsed_s": 6.3,
+          "composite_alerts": 1
+        },
+        {
+          "episode": 500,
+          "mean_reward": 0.16225,
+          "std_reward": 0.08409109643713775,
+          "exec_match": -0.028000000000000004,
+          "partial_credit": 0.3441,
+          "elapsed_s": 7.7,
+          "composite_alerts": 1
+        },
+        {
+          "episode": 600,
+          "mean_reward": 0.1509,
+          "std_reward": 0.07420033692645876,
+          "exec_match": -0.032,
+          "partial_credit": 0.3246,
+          "elapsed_s": 9.0,
+          "composite_alerts": 1
+        }
+      ],
+      "final_mean_reward": 0.1509,
+      "final_exec_match": -0.032,
+      "final_partial_credit": 0.3246,
+      "total_hacking_alerts": 6,
+      "first_alert_episode": 100
+    }
+  },
+  "task_05_window": {
+    "balanced": {
+      "weights": {
+        "w_exec": 0.5,
+        "w_partial": 0.3,
+        "w_exact": 0.15,
+        "w_eff": 0.05
+      },
+      "curve": [
+        {
+          "episode": 100,
+          "mean_reward": 0.11961999999999998,
+          "std_reward": 0.04556704510937702,
+          "exec_match": -0.054000000000000006,
+          "partial_credit": 0.4954,
+          "elapsed_s": 1.6,
+          "composite_alerts": 0
+        },
+        {
+          "episode": 200,
+          "mean_reward": 0.13024000000000002,
+          "std_reward": 0.05260705656088355,
+          "exec_match": -0.046000000000000006,
+          "partial_credit": 0.5188,
+          "elapsed_s": 3.3,
+          "composite_alerts": 0
+        },
+        {
+          "episode": 300,
+          "mean_reward": 0.12856,
+          "std_reward": 0.046002243423554905,
+          "exec_match": -0.048,
+          "partial_credit": 0.5152,
+          "elapsed_s": 5.0,
+          "composite_alerts": 0
+        },
+        {
+          "episode": 400,
+          "mean_reward": 0.12022000000000002,
+          "std_reward": 0.03885526476553725,
+          "exec_match": -0.05600000000000001,
+          "partial_credit": 0.5034,
+          "elapsed_s": 6.8,
+          "composite_alerts": 0
+        },
+        {
+          "episode": 500,
+          "mean_reward": 0.12138,
+          "std_reward": 0.04720037711713753,
+          "exec_match": -0.042,
+          "partial_credit": 0.48260000000000003,
+          "elapsed_s": 8.7,
+          "composite_alerts": 0
+        },
+        {
+          "episode": 600,
+          "mean_reward": 0.1295,
+          "std_reward": 0.03253751680752544,
+          "exec_match": -0.04,
+          "partial_credit": 0.509,
+          "elapsed_s": 10.5,
+          "composite_alerts": 0
+        }
+      ],
+      "final_mean_reward": 0.1295,
+      "final_exec_match": -0.04,
+      "final_partial_credit": 0.509,
+      "total_hacking_alerts": 0,
+      "first_alert_episode": null
+    },
+    "high_exec": {
+      "weights": {
+        "w_exec": 0.7,
+        "w_partial": 0.2,
+        "w_exact": 0.05,
+        "w_eff": 0.05
+      },
+      "curve": [
+        {
+          "episode": 100,
+          "mean_reward": 0.0574,
+          "std_reward": 0.04403316931586914,
+          "exec_match": -0.052000000000000005,
+          "partial_credit": 0.48,
+          "elapsed_s": 1.8,
+          "composite_alerts": 0
+        },
+        {
+          "episode": 200,
+          "mean_reward": 0.06364,
+          "std_reward": 0.04363794678946295,
+          "exec_match": -0.04800000000000001,
+          "partial_credit": 0.5001999999999999,
+          "elapsed_s": 3.4,
+          "composite_alerts": 0
+        },
+        {
+          "episode": 300,
+          "mean_reward": 0.06372,
+          "std_reward": 0.04689905755982736,
+          "exec_match": -0.05000000000000001,
+          "partial_credit": 0.5046,
+          "elapsed_s": 4.9,
+          "composite_alerts": 0
+        },
+        {
+          "episode": 400,
+          "mean_reward": 0.06000000000000001,
+          "std_reward": 0.04018955088079487,
+          "exec_match": -0.056000000000000015,
+          "partial_credit": 0.5099999999999999,
+          "elapsed_s": 6.6,
+          "composite_alerts": 0
+        },
+        {
+          "episode": 500,
+          "mean_reward": 0.06988,
+          "std_reward": 0.03943482724699069,
+          "exec_match": -0.032,
+          "partial_credit": 0.47440000000000004,
+          "elapsed_s": 8.2,
+          "composite_alerts": 0
+        },
+        {
+          "episode": 600,
+          "mean_reward": 0.07128,
+          "std_reward": 0.038242928758137756,
+          "exec_match": -0.04000000000000001,
+          "partial_credit": 0.5104,
+          "elapsed_s": 9.9,
+          "composite_alerts": 0
+        }
+      ],
+      "final_mean_reward": 0.07128,
+      "final_exec_match": -0.04000000000000001,
+      "final_partial_credit": 0.5104,
+      "total_hacking_alerts": 0,
+      "first_alert_episode": null
+    },
+    "high_partial": {
+      "weights": {
+        "w_exec": 0.3,
+        "w_partial": 0.5,
+        "w_exact": 0.15,
+        "w_eff": 0.05
+      },
+      "curve": [
+        {
+          "episode": 100,
+          "mean_reward": 0.2195,
+          "std_reward": 0.060698023032056,
+          "exec_match": -0.06000000000000001,
+          "partial_credit": 0.4794,
+          "elapsed_s": 1.5,
+          "composite_alerts": 0
+        },
+        {
+          "episode": 200,
+          "mean_reward": 0.23819999999999997,
+          "std_reward": 0.06219935690985881,
+          "exec_match": -0.054000000000000006,
+          "partial_credit": 0.5139999999999999,
+          "elapsed_s": 2.9,
+          "composite_alerts": 0
+        },
+        {
+          "episode": 300,
+          "mean_reward": 0.24060000000000004,
+          "std_reward": 0.06484319547955669,
+          "exec_match": -0.05000000000000001,
+          "partial_credit": 0.5152,
+          "elapsed_s": 4.4,
+          "composite_alerts": 0
+        },
+        {
+          "episode": 400,
+          "mean_reward": 0.24150000000000002,
+          "std_reward": 0.05912909605262034,
+          "exec_match": -0.052000000000000005,
+          "partial_credit": 0.5194,
+          "elapsed_s": 5.9,
+          "composite_alerts": 0
+        },
+        {
+          "episode": 500,
+          "mean_reward": 0.2318,
+          "std_reward": 0.0606280463152162,
+          "exec_match": -0.044000000000000004,
+          "partial_credit": 0.49400000000000005,
+          "elapsed_s": 7.7,
+          "composite_alerts": 0
+        },
+        {
+          "episode": 600,
+          "mean_reward": 0.24170000000000003,
+          "std_reward": 0.05048375976489867,
+          "exec_match": -0.04000000000000001,
+          "partial_credit": 0.513,
+          "elapsed_s": 9.3,
+          "composite_alerts": 0
+        }
+      ],
+      "final_mean_reward": 0.24170000000000003,
+      "final_exec_match": -0.04000000000000001,
+      "final_partial_credit": 0.513,
+      "total_hacking_alerts": 0,
+      "first_alert_episode": null
+    }
+  }
+}

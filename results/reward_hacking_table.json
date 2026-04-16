@@ -1,0 +1,132 @@
+{
+  "task_01_simple": {
+    "exact": {
+      "agent": "reinforce",
+      "total_composite_alerts": 0,
+      "first_alert_episode": null,
+      "alert_rate": 0.0
+    },
+    "execution": {
+      "agent": "reinforce",
+      "total_composite_alerts": 0,
+      "first_alert_episode": null,
+      "alert_rate": 0.0
+    },
+    "partial": {
+      "agent": "reinforce",
+      "total_composite_alerts": 0,
+      "first_alert_episode": null,
+      "alert_rate": 0.0
+    },
+    "composite": {
+      "agent": "reinforce",
+      "total_composite_alerts": 0,
+      "first_alert_episode": null,
+      "alert_rate": 0.0
+    }
+  },
+  "task_02_aggregation": {
+    "exact": {
+      "agent": "reinforce",
+      "total_composite_alerts": 8,
+      "first_alert_episode": 50,
+      "alert_rate": 1.0
+    },
+    "execution": {
+      "agent": "reinforce",
+      "total_composite_alerts": 8,
+      "first_alert_episode": 50,
+      "alert_rate": 1.0
+    },
+    "partial": {
+      "agent": "reinforce",
+      "total_composite_alerts": 8,
+      "first_alert_episode": 50,
+      "alert_rate": 1.0
+    },
+    "composite": {
+      "agent": "reinforce",
+      "total_composite_alerts": 8,
+      "first_alert_episode": 50,
+      "alert_rate": 1.0
+    }
+  },
+  "task_03_join": {
+    "exact": {
+      "agent": "reinforce",
+      "total_composite_alerts": 5,
+      "first_alert_episode": 100,
+      "alert_rate": 0.625
+    },
+    "execution": {
+      "agent": "reinforce",
+      "total_composite_alerts": 5,
+      "first_alert_episode": 100,
+      "alert_rate": 0.625
+    },
+    "partial": {
+      "agent": "reinforce",
+      "total_composite_alerts": 5,
+      "first_alert_episode": 100,
+      "alert_rate": 0.625
+    },
+    "composite": {
+      "agent": "reinforce",
+      "total_composite_alerts": 5,
+      "first_alert_episode": 100,
+      "alert_rate": 0.625
+    }
+  },
+  "task_04_subquery": {
+    "exact": {
+      "agent": "reinforce",
+      "total_composite_alerts": 8,
+      "first_alert_episode": 50,
+      "alert_rate": 1.0
+    },
+    "execution": {
+      "agent": "reinforce",
+      "total_composite_alerts": 8,
+      "first_alert_episode": 50,
+      "alert_rate": 1.0
+    },
+    "partial": {
+      "agent": "reinforce",
+      "total_composite_alerts": 8,
+      "first_alert_episode": 50,
+      "alert_rate": 1.0
+    },
+    "composite": {
+      "agent": "reinforce",
+      "total_composite_alerts": 8,
+      "first_alert_episode": 50,
+      "alert_rate": 1.0
+    }
+  },
+  "task_05_window": {
+    "exact": {
+      "agent": "reinforce",
+      "total_composite_alerts": 1,
+      "first_alert_episode": 150,
+      "alert_rate": 0.125
+    },
+    "execution": {
+      "agent": "reinforce",
+      "total_composite_alerts": 1,
+      "first_alert_episode": 150,
+      "alert_rate": 0.125
+    },
+    "partial": {
+      "agent": "reinforce",
+      "total_composite_alerts": 1,
+      "first_alert_episode": 150,
+      "alert_rate": 0.125
+    },
+    "composite": {
+      "agent": "reinforce",
+      "total_composite_alerts": 1,
+      "first_alert_episode": 150,
+      "alert_rate": 0.125
+    }
+  }
+}
