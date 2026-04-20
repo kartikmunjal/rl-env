@@ -1,0 +1,50 @@
+[
+  {
+    "episode": 100,
+    "train_mean_reward": 0.0769,
+    "eval_mean_reward": 0.07094,
+    "eval_exec_match": -0.032,
+    "eval_partial": 0.2978,
+    "elapsed_s": 1.5203640460968018
+  },
+  {
+    "episode": 200,
+    "train_mean_reward": 0.078925,
+    "eval_mean_reward": 0.07017,
+    "eval_exec_match": -0.026000000000000002,
+    "eval_partial": 0.28990000000000005,
+    "elapsed_s": 2.748793125152588
+  },
+  {
+    "episode": 300,
+    "train_mean_reward": 0.08564500000000001,
+    "eval_mean_reward": 0.10637999999999997,
+    "eval_exec_match": -0.02,
+    "eval_partial": 0.3946,
+    "elapsed_s": 3.866697072982788
+  },
+  {
+    "episode": 400,
+    "train_mean_reward": 0.10126500000000002,
+    "eval_mean_reward": 0.09734,
+    "eval_exec_match": -0.02,
+    "eval_partial": 0.3618,
+    "elapsed_s": 5.071955919265747
+  },
+  {
+    "episode": 500,
+    "train_mean_reward": 0.08380000000000001,
+    "eval_mean_reward": 0.08086,
+    "eval_exec_match": -0.028000000000000008,
+    "eval_partial": 0.32419999999999993,
+    "elapsed_s": 6.14465594291687
+  },
+  {
+    "episode": 600,
+    "train_mean_reward": 0.08556999999999998,
+    "eval_mean_reward": 0.07665,
+    "eval_exec_match": -0.034,
+    "eval_partial": 0.31749999999999995,
+    "elapsed_s": 7.340955018997192
+  }
+]

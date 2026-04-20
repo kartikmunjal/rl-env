@@ -108,13 +108,24 @@ The environment's `step()` raises `AssertionError` if the agent selects a masked
 
 ### Why not PPO?
 
-Proximal Policy Optimisation (PPO) is the standard choice for production RLHF systems. For this research environment, it is overkill for three reasons:
+Proximal Policy Optimisation (PPO) is the standard choice for production RLHF systems. This project deliberately started with REINFORCE because it offers a cleaner baseline for observing reward-pathology dynamics. That decision remains defensible for a diagnostic prototype, but the experimental results also expose its cost: terminal-only REINFORCE is high-variance enough that the learned agent fails to clearly separate from the rule baseline on four of five tasks. The right conclusion is therefore conditional, not absolute: REINFORCE is useful here as an *instrumented failure-revealing baseline*, not as a provenly sufficient optimization method for this environment.
+
+REINFORCE was preferred initially for three reasons:
 
 1. **Scale mismatch**: PPO's KL constraint and clipping hyperparameters are designed for large models (billions of parameters) where a single gradient step can cause catastrophic policy shifts. Our policy network has ~150,000 parameters and a 590-dim observation space. Vanilla gradient steps are safe.
 
 2. **Research transparency**: REINFORCE's failure modes (high variance, slow convergence on long episodes) are directly observable in learning curves and documentable. PPO's clipping and KL penalty obscure these failure modes behind additional hyperparameters.
 
 3. **No experience replay requirement**: PPO requires a replay buffer and importance sampling. REINFORCE uses on-policy trajectories, which is correct for an environment where the reward function changes between experiments (reward signal ablation study).
+
+### What the results changed
+
+The main report originally framed the rule-agent wins primarily as an NL-encoder bottleneck. That is incomplete. The data support a two-factor story:
+
+1. **Representation bottleneck**: the 128-dim bag-of-words state strongly favors keyword heuristics, which makes the rule agent unusually competitive.
+2. **Optimization bottleneck**: REINFORCE with terminal-only reward and sparse semantic feedback does not reliably convert the available information into superior behavior.
+
+This does not invalidate the D5 choice for a research prototype, but it does narrow the claim. REINFORCE is the right choice if the goal is to make variance and local optima visible. It is not enough to demonstrate that the RL formulation itself is strong. The environment's research value therefore shifts away from "show strong SQL learning" and toward "make reward-pathology mechanisms measurable in a domain with executable semantics."
 
 ### Entropy bonus
 
@@ -128,12 +139,17 @@ The four reward functions (R1-R4) are designed with different trade-offs:
 
 | Reward | Signal Density | Semantic Correctness | Hacking Vulnerability | Primary Use |
 |--------|---------------|---------------------|-----------------------|-------------|
-| R1 Exact Match | Sparse (0/1) | Syntactic proxy | H1.1, H1.2 | Evaluation metric |
+| R1 Exact Match | Sparse (0/1) | Syntactic proxy | H1.1, H1.2 | Stress-test metric |
 | R2 Execution Match | Medium (0/0.5/1) | High | H2.1, H2.2 | Evaluation + training input |
 | R3 Partial Credit | Dense [0,1] | Low-medium | H3.1, H3.2 | Warm-start training |
 | R4 Composite | Dense [0,1] | Medium-high | H4.1, H4.2 | Primary training signal |
 
-The composite reward R4 is used for REINFORCE training because it combines the semantic richness of R2 with the density of R3, while the efficiency penalty and error penalties mitigate the most critical hacking scenarios.
+Two clarifications are necessary after the final experiments:
+
+1. **R1 exact match is not merely sparse; it is degenerate in this benchmark.** No agent achieves exact match > 0.0 on any task, so R1 provides no discriminative learning signal and cannot serve as a practical ground-truth verifier for full correctness.
+2. **R4 is useful but not fully corrective.** The weight ablation shows that execution match stays effectively constant as `w_exec` increases, which means the learned policy can settle into partial-credit optima that are insensitive to stronger execution penalties.
+
+The composite reward R4 is still the best available training signal in this repository because it combines the semantic richness of R2 with the density of R3, while the efficiency and error penalties mitigate some critical hacking scenarios. But the data do not support the stronger claim that the current weighting solves the reward-design problem. In that sense the environment is doing useful research work precisely by failing visibly: it exposes where a seemingly reasonable reward decomposition still leaves semantic blind spots.
 
 ---
 
@@ -163,7 +179,9 @@ current_phase:   int32   (1,)      — phase index
 ```
 
 **Why bag-of-words, not a learned embedding?**
-A learned embedding would require a separate NL encoder that is trained jointly with the RL policy. This creates a second confound: differences in performance across reward functions could be due to differences in how well the NL encoder trained, not differences in the reward signal. Bag-of-words NL encoding is fixed, making the only variable the reward signal itself.
+A learned embedding would require a separate NL encoder that is trained jointly with the RL policy. This creates a second confound: differences in performance across reward functions could be due to differences in how well the NL encoder trained, not differences in the reward signal. Bag-of-words NL encoding is fixed, making reward effects easier to isolate.
+
+The trade-off is now explicit in the results: the fixed BoW representation reduced confounding, but it also imposed a low information ceiling and made the rule baseline unusually hard to beat. This was acceptable for a first-pass reward-signal study, but it means performance comparisons should be read as environment diagnostics, not as evidence that the benchmark captures broad natural-language SQL understanding.
 
 **Why one-hot partial SQL, not raw indices?**
 One-hot encoding provides a continuous, differentiable signal to the policy network. Raw integer indices would create arbitrary ordinal relationships between action tokens (action 0 ≠ "less than" action 1).

@@ -23,7 +23,9 @@ Vulnerability to reward hacking:
             the agent can always SELECT * and get 1.0 on single-table queries.
             Mitigated by restricting * in the action mask.
 
-Use case: evaluation metric (not training signal — too sparse).
+Use case: stress-test metric, not a practical training signal.
+In the released benchmark no agent achieves exact match > 0.0, so this reward
+is informative mainly as a validity warning about the strictest verifier.
 
 Author: Kartik Munjal
 """

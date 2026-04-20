@@ -1,0 +1,120 @@
+{
+  "experiment": "checkpoint_eval_kl_threshold_sensitivity",
+  "n_episodes": 400,
+  "thresholds": {
+    "kl": [
+      0.35,
+      0.5,
+      0.65
+    ],
+    "entropy": 0.8,
+    "coverage_trend": 0.4
+  },
+  "notes": [
+    "Uses released REINFORCE checkpoints under fixed evaluation.",
+    "Measures sensitivity on checkpoint evaluation traces, not original training traces.",
+    "Past training runs cannot be replayed exactly from artifacts because per-episode detector traces were not persisted."
+  ],
+  "tasks": {
+    "task_01_simple": {
+      "0.35": {
+        "kl_threshold": 0.35,
+        "first_alert_episode": null,
+        "total_composite_alerts": 0,
+        "alert_rate": 0.0
+      },
+      "0.50": {
+        "kl_threshold": 0.5,
+        "first_alert_episode": null,
+        "total_composite_alerts": 0,
+        "alert_rate": 0.0
+      },
+      "0.65": {
+        "kl_threshold": 0.65,
+        "first_alert_episode": null,
+        "total_composite_alerts": 0,
+        "alert_rate": 0.0
+      }
+    },
+    "task_02_aggregation": {
+      "0.35": {
+        "kl_threshold": 0.35,
+        "first_alert_episode": 50,
+        "total_composite_alerts": 8,
+        "alert_rate": 1.0
+      },
+      "0.50": {
+        "kl_threshold": 0.5,
+        "first_alert_episode": 50,
+        "total_composite_alerts": 8,
+        "alert_rate": 1.0
+      },
+      "0.65": {
+        "kl_threshold": 0.65,
+        "first_alert_episode": 50,
+        "total_composite_alerts": 8,
+        "alert_rate": 1.0
+      }
+    },
+    "task_03_join": {
+      "0.35": {
+        "kl_threshold": 0.35,
+        "first_alert_episode": 100,
+        "total_composite_alerts": 5,
+        "alert_rate": 0.625
+      },
+      "0.50": {
+        "kl_threshold": 0.5,
+        "first_alert_episode": 100,
+        "total_composite_alerts": 5,
+        "alert_rate": 0.625
+      },
+      "0.65": {
+        "kl_threshold": 0.65,
+        "first_alert_episode": 100,
+        "total_composite_alerts": 5,
+        "alert_rate": 0.625
+      }
+    },
+    "task_04_subquery": {
+      "0.35": {
+        "kl_threshold": 0.35,
+        "first_alert_episode": 50,
+        "total_composite_alerts": 8,
+        "alert_rate": 1.0
+      },
+      "0.50": {
+        "kl_threshold": 0.5,
+        "first_alert_episode": 50,
+        "total_composite_alerts": 8,
+        "alert_rate": 1.0
+      },
+      "0.65": {
+        "kl_threshold": 0.65,
+        "first_alert_episode": 50,
+        "total_composite_alerts": 8,
+        "alert_rate": 1.0
+      }
+    },
+    "task_05_window": {
+      "0.35": {
+        "kl_threshold": 0.35,
+        "first_alert_episode": 150,
+        "total_composite_alerts": 1,
+        "alert_rate": 0.125
+      },
+      "0.50": {
+        "kl_threshold": 0.5,
+        "first_alert_episode": 150,
+        "total_composite_alerts": 1,
+        "alert_rate": 0.125
+      },
+      "0.65": {
+        "kl_threshold": 0.65,
+        "first_alert_episode": 150,
+        "total_composite_alerts": 1,
+        "alert_rate": 0.125
+      }
+    }
+  }
+}

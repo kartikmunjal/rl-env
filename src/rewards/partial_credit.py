@@ -86,7 +86,7 @@ def _extract_where(sql: str) -> Optional[tuple[str, str]]:
     Handles both "WHERE col op val" and "WHERE col IN (...)".
     """
     m = re.search(
-        r"\bWHERE\s+(\w+(?:\.\w+)?)\s*(=|!=|<>|>=|<=|>|<|LIKE|IN|NOT\s+IN)\b",
+        r"\bWHERE\s+(\w+(?:\.\w+)?)\s*(=|!=|<>|>=|<=|>|<|LIKE|IN|NOT\s+IN)(?=\s|\(|$)",
         sql,
         re.IGNORECASE,
     )

@@ -21,10 +21,11 @@ Design decisions (see research_notes/design_decisions.md §D3):
     Rationale: Reward is only issued at episode termination; discounting would
     create an artificial preference for shorter episodes (Tasks 1-2 over Tasks 4-5).
 
-    REINFORCE over PPO: REINFORCE is the correct choice at this scale.
-    The environment has a 590-dim observation, not 175B parameters.
-    REINFORCE's failure modes (high variance) are directly observable and
-    documentable, which is the research goal.
+    REINFORCE over PPO: REINFORCE is used here as a transparent baseline.
+    The environment has a modest observation size and the project prioritizes
+    visible failure modes over optimizer sophistication. The final results also
+    show the limitation of that choice: terminal-only REINFORCE is high-variance
+    enough that it does not clearly outperform the rule baseline on most tasks.
 
 Observation flattening:
     obs["schema"]        (MAX_COLS, 8)   -> flatten to (MAX_COLS*8,)

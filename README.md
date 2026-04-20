@@ -19,6 +19,25 @@ The key research insight is that by using a **schema-grounded slot-filling** for
 
 ---
 
+## Portfolio Position
+
+This repo is the structured-environment companion to
+[`rlhf-and-reward-modelling-alt`](https://github.com/kartikmunjal/rlhf-and-reward-modelling-alt).
+Both repos study the same failure mode - optimizing an imperfect reward until it
+breaks - but at different levels of control:
+
+| Repo | Reward surface | What it isolates |
+|------|----------------|------------------|
+| `rl-env` | SQL execution, partial credit, exact match, composite reward | Reward hacking in a fully inspectable MDP |
+| `rlhf-and-reward-modelling-alt` | preference RMs, rubric RMs, ensembles, DPO/PPO | Reward hacking in language-model alignment |
+| `deep-research-agent` | claim-level verifier labels | Verification as a process-style diagnostic signal |
+
+The intended research through-line is: start with reward hacking in a controlled
+SQL environment, transfer the lessons to RLHF reward models, then reuse the same
+process-level thinking for agent verification.
+
+---
+
 ## Environment Design
 
 ### State Space
@@ -121,7 +140,7 @@ Signal 3 fires when ρ > τ_ρ = 0.40, indicating a persistent upward coverage t
 
 **Composite Alert**
 
-A composite alert fires when **2 or 3 of the three signals trigger simultaneously**. This voting threshold reduces false positives: any single signal can fire transiently due to short-window variance, but simultaneous activation of two signals provides strong evidence of systematic hacking behaviour. The severity is `|signals_fired| / 3`.
+A composite alert fires when **2 or 3 of the three signals trigger simultaneously**. This voting threshold is a deliberate design choice: any single signal can fire transiently due to short-window variance, while requiring all three is too conservative for mixed-mode failures. The severity is `|signals_fired| / 3`. The per-signal thresholds themselves are heuristic and are discussed as a limitation in the methodology section below.
 
 ---
 
@@ -170,21 +189,21 @@ pytest tests/ -v
 
 ## Results
 
-All experiments run with 1,500 training episodes per task, REINFORCE with composite reward (R4), 50-episode evaluation windows. Baselines are evaluated with 300 episodes each. Raw data in [`results/eval_table.json`](results/eval_table.json), [`results/training_curves.json`](results/training_curves.json), and [`results/curriculum_ablation.json`](results/curriculum_ablation.json). Additional ablation data in [`results/weight_ablation.json`](results/weight_ablation.json), [`results/extended_curriculum.json`](results/extended_curriculum.json), and [`results/reward_hacking_table.json`](results/reward_hacking_table.json).
+All experiments run with 1,500 training episodes per task, REINFORCE with composite reward (R4), 50-episode evaluation windows. Baselines are evaluated with 300 episodes each. Raw data in [`results/eval_table.json`](results/eval_table.json), [`results/training_curves.json`](results/training_curves.json), and [`results/curriculum_ablation.json`](results/curriculum_ablation.json). Additional ablation data in [`results/weight_ablation.json`](results/weight_ablation.json), [`results/extended_curriculum.json`](results/extended_curriculum.json), [`results/reward_hacking_table.json`](results/reward_hacking_table.json), [`results/threshold_sensitivity_eval.json`](results/threshold_sensitivity_eval.json), and traced training-threshold sweeps in [`results/task_02_aggregation/composite/threshold_sensitivity_training_trace.json`](results/task_02_aggregation/composite/threshold_sensitivity_training_trace.json) and [`results/task_03_join/composite/threshold_sensitivity_training_trace.json`](results/task_03_join/composite/threshold_sensitivity_training_trace.json).
 
 ### Key Research Findings
 
 > **Finding 1 — Task structure, not reward weighting, determines hacking vulnerability.**
-> The reward hacking detector fires identically under all four reward signals (exact, execution, partial, composite) for every task. Tasks 2 and 4 trigger 8 composite alerts beginning at episode 50 under every reward function; Task 3 triggers zero alerts throughout 1,500 episodes regardless of reward. The learned policy's behavioral fingerprint — which operators it uses, how many columns it selects, how large its result sets are — is fixed by task structure and training dynamics, not by the evaluation reward function. This means reward function redesign alone cannot eliminate hacking: **hacking is a property of the policy, and must be addressed at the task or curriculum level.**
+> Under fixed-policy evaluation, the reward hacking detector fires identically under all four reward signals (exact, execution, partial, composite) for every task. Tasks 2 and 4 trigger 8 composite alerts beginning at episode 50 under every reward function, while Task 5 triggers a single late alert at episode 150 under every reward function. The learned policy's behavioral fingerprint — which operators it uses, how many columns it selects, how large its result sets are — is therefore largely fixed by training dynamics and task structure, not by the score used at evaluation time. The weight ablation adds the stronger training-time result: increasing `w_exec` does not improve execution match at all. This should be read as an explicit limitation of the current prototype environment, not hidden as a neutral finding: **the present reward design admits stable partial-credit optima that the execution component does not reliably break.** That limitation is precisely what motivates roadmap items 3 and 4 below: tighten the action space's link to semantics, and enrich execution feedback beyond a static database penalty.
 
-> **Finding 2 — Task 3 (INNER JOIN) is structurally hacking-resistant.**
-> Zero composite hacking alerts fired across 1,500 training episodes on Task 3. JOIN tasks require co-selecting a join table and a FK-compatible join key, which forces the agent to diversify its column coverage and operator choices organically. This compositional multi-step structure maintains all three hacking signals below their detection thresholds simultaneously. **Multi-step structured tasks are more hacking-resistant than single-clause tasks** — a design principle with direct implications for curriculum and task construction in RL reward signal research.
+> **Finding 2 — Task 3 (INNER JOIN) is harder to exploit during training, but not immune.**
+> In the main 1,500-episode training run, Task 3 produced no composite alerts, which is materially different from the immediate alert patterns on Tasks 2 and 4. JOIN tasks require co-selecting a join table and a FK-compatible join key, which forces broader operator and column usage during optimization. But the evaluation-only reward-swap study still shows alerts on Task 3 beginning at episode 100, so the correct conclusion is not "JOIN is hacking-proof." The stronger claim supported by the data is narrower: **multi-step relational structure delays and weakens collapse, but does not remove it.**
 
 > **Finding 3 — Curriculum benefit is hierarchically structured.**
-> Transfer learning from Task 1 to Task 2 yields no advantage (final reward within 1% of scratch); transfer from Task 3 to Task 4 yields a +62% final reward gain (0.300 vs 0.185) and 3× faster convergence. The distinction is semantic: Task 1 and Task 2 belong to different clause families (simple filter vs. aggregation), while Task 3 and Task 4 share multi-table reasoning structure (JOIN key selection generalises to subquery variable binding). This validates the principle that curriculum benefit requires **shared sub-skills**, not merely shared schema.
+> Transfer learning follows a depth-of-transfer ladder rather than a binary "shared sub-skills / no shared sub-skills" split. Task 1 to Task 2 yields no benefit because WHERE-slot priors do not transfer to GROUP BY or HAVING decisions. Task 1 to Task 3 yields a small early gain that fades; the most plausible explanation is transfer of shallow schema/action priors, but the current artifacts do not log phase-level action distributions, so that mechanism remains a hypothesis. Task 3 to Task 4 yields a +62% final reward gain (0.300 vs 0.185) and 3× faster convergence because JOIN training transfers the deeper capability that the target also needs: coordinating two SQL namespaces through FK-compatible bindings. The pattern is therefore: **no overlap -> zero transfer, temporary warm-start -> fading transfer, deep structural overlap -> persistent transfer.**
 
-> **Finding 4 — The NL encoder is the performance bottleneck, not the RL algorithm.**
-> The rule-based agent dominates REINFORCE on Tasks 1–4 despite having zero training. The agent uses keyword matching on NL queries — precisely what the bag-of-words NL embedding encodes. REINFORCE cannot extract more signal from a fixed 128-dim BoW encoding than the rule agent already uses. This reveals that the performance ceiling for all agents in this environment is set by the NL state representation, not the learning algorithm. Richer representations (learned encoders, parse-tree embeddings) would directly lift this ceiling.
+> **Finding 4 — The bottleneck is not just the NL encoder; it is the encoder plus a weak RL optimization regime.**
+> The rule-based agent dominates REINFORCE on Tasks 1–4 despite having zero training, which does indicate that the 128-dim bag-of-words state is a hard ceiling. But that is not the full story. REINFORCE here also uses terminal-only reward with high variance, and it fails to cleanly separate from the non-learning rule baseline on the very tasks where learning should have been easiest. The Task 5 win is real but small. The correct interpretation is therefore two-part: the BoW encoder constrains what information is available, and the current REINFORCE formulation does not reliably convert the available information into better behavior than a hand-written heuristic. That does not make the environment useless. Its value is diagnostic rather than benchmark-maximizing: it makes reward hacking, local optima, and metric disagreement visible in a controlled SQL domain with executable semantics. Richer encoders are necessary, but on their own they are not sufficient evidence that the RL formulation is sound.
 
 ### Learning Curves
 
@@ -224,10 +243,12 @@ Metrics: **composite** = primary training signal; **exec** = execution match (�
 **Key findings:**
 
 1. **No agent achieves exact match > 0.0** on any task. This is expected — the normalised string comparison in R1 is extremely strict, and the slot-filling policy is not constrained to reproduce gold SQL verbatim. It establishes that R1 is unsuitable as a training signal.
+   More importantly, this is a validity problem, not just a strictness problem. If exact match never rises above zero, R1 provides no discriminative gradient at all and cannot serve as a ground-truth verifier for "fully correct" behavior. The environment therefore cannot claim semantic validity by appealing to exact match. The current validity argument has to come from metric triangulation instead: execution match distinguishes executable result agreement from execution failure, and partial credit distinguishes clause-level progress from total mismatch. That triangulation is informative, but it is weaker than having a non-degenerate exact verifier, so claims about genuine SQL understanding should stay narrow.
 
-2. **Rule-based agent dominates Tasks 1–4** on composite reward. This is the correct result: keyword matching on simple NL patterns is sufficient for tasks 1–3, and the rule agent's keyword-to-IN mapping gives it a decisive edge on Task 4 execution match (0.203 vs −0.037 for REINFORCE). This is not evidence that REINFORCE is a poor algorithm — it is evidence that the **NL encoder is the performance bottleneck**. The bag-of-words embedding encodes exactly the keywords the rule agent matches. REINFORCE cannot extract more task-relevant signal from the same 128-dim BoW vector than a rule system already exploits via direct lookup. Both agents share an identical information ceiling imposed by the NL representation. The fix is not a better RL algorithm but richer NL state: a learned sentence encoder (e.g., BERT-based) trained end-to-end would provide semantic distinctions unavailable to BoW, enabling REINFORCE to distinguish queries the rule agent confuses. This validates the design decision to include a non-learning baseline — it reveals the NL representation limit, not an RL training failure.
+2. **Rule-based agent dominates Tasks 1–4** on composite reward. The BoW encoder is part of the reason: keyword matching on simple NL patterns is sufficient for tasks 1–3, and the rule agent's keyword-to-IN mapping gives it a decisive edge on Task 4 execution match (0.203 vs −0.037 for REINFORCE). But it is incomplete to frame this purely as an encoder bottleneck. The learning agent also uses a high-variance, terminal-only REINFORCE objective and never clearly separates from the rule baseline on the tasks it should plausibly learn. The environment therefore exposes a methodological limitation as well as a representational one: with the current RL setup, the non-learning baseline wins on 80% of tasks.
 
 3. **REINFORCE beats both baselines on Task 5** (partial credit 0.529 vs 0.490 random, 0.467 rule). Window function tasks have no clear keyword cue for PARTITION BY column selection. The rule agent's keyword-to-action lookup fails here, while REINFORCE learns from partial-credit feedback to select schema-compatible partition columns.
+   This is the clearest positive learning result in the benchmark, but it should be framed cautiously. The advantage is modest and appears primarily in partial credit, not in execution match.
 
 4. **Execution match is consistently negative** for REINFORCE and random (range −0.09 to −0.025). This is not a failure — it reflects that the majority of randomly assembled SQL queries cause SQLite execution errors, each penalised at −0.1. The partial credit component keeps composite reward positive. This is Hacking Scenario H2.2 (timeout stagnation) partially manifesting: even with the −0.1 error penalty, the policy cannot fully escape the high-error regime without semantic understanding.
 
@@ -266,7 +287,7 @@ The parallel finding in the [RLHF repo](https://github.com/kartikmunjal/rlhf-and
 
 | | Simple task structure | Complex task structure (e.g. INNER JOIN) |
 |---|---|---|
-| **Implicit RM (Bradley-Terry)** | High hacking risk (T1/T2/T4 alert within 100–500 eps) | Lower structural risk from diversity, but RM still exploitable |
+| **Implicit RM (Bradley-Terry)** | High hacking risk (T1/T2/T4 alert within 100–500 eps) | Delayed and reduced hacking risk, but not eliminated — RM still exploitable |
 | **Explicit Rubric RM** | Reward signal controlled (31% vs 78% verbose-bias) | Both dimensions favorable — lowest overall hacking exposure |
 
 Both dimensions matter and they interact: a well-designed reward signal cannot compensate for a trivially exploitable task structure, and a rich task structure does not immunise against a weak reward signal.
@@ -292,9 +313,9 @@ Both dimensions matter and they interact: a well-designed reward signal cannot c
 
 **Summary**: Curriculum initialisation provides a mean advantage of **+0.014** in the early phase (ep 100–500) and **+0.004** in the late phase (ep 600–1200). The maximum early advantage is +0.020 at episode 200.
 
-**Interpretation**: Task 1 pretraining encodes schema structure knowledge — specifically which table and column actions correspond to the `customers` and `orders` tables — into the policy's weights. When fine-tuned on Task 3, the policy does not need to re-learn this mapping from scratch, leading to faster early convergence. The curriculum advantage dissipates after ~600 episodes as the scratch agent also learns the schema structure. The final performance gap (+0.005 at ep 1200) is small but persistent.
+**Interpretation**: The most defensible claim from the released artifacts is that Task 1 pretraining gives Task 3 a short-lived warm start, but not a durable relational advantage. The temporary benefit is *consistent with* transfer of shallow schema/action priors — e.g., earlier concentration on plausible tables and columns — but the current artifacts do not log phase-level action distributions, so that mechanism remains a hypothesis rather than a demonstrated result. The curriculum advantage dissipates after ~600 episodes as the scratch agent catches up on those basics. The final performance gap (+0.005 at ep 1200) is small.
 
-This experiment directly answers the curriculum design question: **the Task 1 → Task 3 curriculum delivers approximately 3× faster convergence to the ep-300 performance level** (curriculum reaches 0.171 at ep 300; scratch reaches 0.157 at ep 300 and does not exceed 0.171 until ep 1000). For settings where episode budget is constrained, curriculum initialisation is unambiguously beneficial.
+This experiment directly answers the curriculum design question only at the level of learning curves: **the Task 1 → Task 3 curriculum reaches the scratch ep-300 reward level earlier**, but the available data do not yet show which action distributions changed to create that effect. Saved checkpoints alone are not enough for a retroactive phase-histogram analysis because the serialized artifacts contain only model weights, optimizer state, and `episode_count`, not per-episode trajectories or slot choices. A small follow-up experiment in this repo should log phase-level action histograms during curriculum and scratch training so the temporary transfer can be attributed to specific slots rather than inferred from reward alone.
 
 ### R4 Weight Sensitivity Ablation — Tasks 2 and 5
 
@@ -308,13 +329,13 @@ This experiment directly answers the curriculum design question: **the Task 1 �
 
 **Key findings:**
 
-1. **Execution match is weight-invariant** (−0.032 to −0.040 across all configs on both tasks). The learned policy generates the same proportion of execution errors regardless of how those errors are penalised. The bottleneck is the quality of the assembled SQL, not the training signal weighting.
+1. **Execution match is weight-invariant** (−0.032 to −0.040 across all configs on both tasks). This is not just a neutral empirical finding; it is a design red flag. The learned policy generates the same proportion of execution errors regardless of how those errors are penalised, which means the policy is effectively not responding to the execution signal at all. The environment has admitted a partial-credit local optimum that is insensitive to stronger semantic penalties.
 
 2. **Task 2 triggers 6 hacking alerts under every weight profile**, with first alert always at episode 100. Task 5 triggers zero alerts under every profile. Weight tuning cannot change the task-structural hacking vulnerability — confirming Finding 1.
 
 3. **high_partial inflates composite reward** (Task 2: 0.077 → 0.151, Task 5: 0.130 → 0.242) because the metric being maximised weights partial credit more heavily. This is H4.1 in action: higher `w_partial` creates a local optimum where good partial credit substitutes for execution match. Researchers should not interpret high-partial composite rewards as better policies.
 
-4. **high_exec suppresses composite reward** by 50–60% (Task 2: 0.038, Task 5: 0.071). Sparse execution signal slows convergence without improving final execution match. For this environment's task and episode-length scale, `w_exec ≈ 0.50` provides the best balance between signal density and semantic correctness.
+4. **high_exec suppresses composite reward** by 50–60% (Task 2: 0.038, Task 5: 0.071) without improving final execution match. The practical conclusion is not that `w_exec ≈ 0.50` is "optimal" in a general sense; it is that within this environment, reward reweighting alone cannot repair the semantic blind spot.
 
 ### Extended Curriculum Ablation — T1→T2 and T3→T4
 
@@ -331,7 +352,7 @@ This experiment directly answers the curriculum design question: **the Task 1 �
 
 - **T3→T4 yields strong curriculum benefit.** INNER JOIN and IN Subquery share multi-table reasoning: both require selecting a source table, choosing FK-compatible join columns, and coordinating across two SQL namespaces. The JOIN policy's FK-mapping associations transfer directly to subquery variable binding. The curriculum agent crosses the scratch ep-300 performance level at episode 100 — 3× convergence speedup — and achieves 62% higher final reward (0.300 vs 0.185). This is the strongest transfer result in the benchmark.
 
-The pattern across all three curriculum paths (T1→T3: moderate benefit; T1→T2: no benefit; T3→T4: strong benefit) confirms that **curriculum benefit scales with sub-skill overlap**, not SQL complexity difference. JOIN → subquery is a natural skill hierarchy; simple → aggregation crosses a clause-family boundary.
+The pattern across all three curriculum paths is more specific than the original "shared sub-skills" summary. T1→T2 shows zero transfer because the target introduces new clause families. T1→T3 shows temporary transfer because source pretraining helps only with shallow schema priors and action familiarization; once scratch catches up on those basics, the benefit disappears. T3→T4 shows persistent transfer because the source and target both require the deeper relational skill of coordinating two SQL namespaces through compatible keys. Curriculum benefit therefore scales with **transfer depth**, not just overlap in topic or difficulty.
 
 ### Reward Signal × Hacking Rate Interaction
 
@@ -386,7 +407,9 @@ sql-rl-env/
 │   ├── run_experiment.py       # REINFORCE training loop
 │   ├── evaluate_agents.py      # Cross-agent comparison table
 │   ├── run_all_experiments.py  # Master: train all tasks + eval + T1→T3 curriculum
-│   └── run_extra_experiments.py  # Ablations: weight sensitivity, extended curriculum, reward×hacking
+│   ├── run_extra_experiments.py  # Ablations: weight sensitivity, extended curriculum, reward×hacking
+│   ├── run_threshold_sensitivity.py  # Checkpoint-eval detector threshold sweep
+│   └── run_trace_threshold_sweep.py  # Offline sweep on traced training runs
 ├── tests/
 │   ├── test_rewards.py         # Reward function unit tests + H3.1 regression
 │   ├── test_actions.py         # Action mask correctness
@@ -412,17 +435,29 @@ The three-signal detection framework in `src/analysis/reward_hacking_detector.py
 | Alert threshold | 2/3 signals simultaneously | 2/3 signals simultaneously |
 | Rolling window | 100 episodes | 100 training steps |
 
-The 2/3 voting threshold is a deliberate choice in both projects. A 1/3 threshold produces excessive false positives as individual signals fluctuate during normal training; a 3/3 threshold is too conservative and misses hacking episodes where one signal remains below threshold by noise alone. This majority-vote structure is the generalizable pattern: **reward hacking manifests as simultaneous anomaly across multiple behavioral dimensions, not as a single-signal spike**.
+The 2/3 voting threshold is a deliberate architectural choice in both projects. A 1/3 threshold produces excessive false positives as individual signals fluctuate during normal training; a 3/3 threshold is too conservative and misses mixed-mode failures where one signal remains below threshold by noise alone. This majority-vote structure is the generalizable pattern: **reward hacking manifests as simultaneous anomaly across multiple behavioral dimensions, not as a single-signal spike**.
 
-The SQL domain operationalizes this methodology in a form where ground truth is available (executable semantics), making it a testbed for hacking detection methods that generalize to domains where ground truth is inaccessible (RLHF reward modeling). The key research contribution is demonstrating that the same statistical framework — KL + entropy + Spearman, with majority-vote composite alerts — detects reward hacking across both a structured task domain (SQL) and the unstructured natural language domain studied in the RLHF literature.
+The per-signal thresholds in this repository are less mature. `kl_threshold=0.50`, `entropy_threshold=0.80`, and `coverage_trend_threshold=0.40` are currently heuristic defaults baked into [`src/analysis/reward_hacking_detector.py`](src/analysis/reward_hacking_detector.py), chosen for interpretability on this toy schema rather than from a formal calibration study. That limitation is now materially narrower than it was in the first release.
+
+Two calibration artifacts now exist:
+
+1. **Checkpoint-evaluation sweep**: [`scripts/run_threshold_sensitivity.py`](scripts/run_threshold_sensitivity.py) replays released checkpoints and shows that `tau_kl in {0.35, 0.50, 0.65}` leaves the composite-alert pattern unchanged for all five tasks in evaluation mode; see [`results/threshold_sensitivity_eval.json`](results/threshold_sensitivity_eval.json).
+
+2. **Training-trace sweep**: traced reruns on an exploit-prone task (Task 2) and a delayed-risk task (Task 3) were logged with [`scripts/run_experiment.py`](scripts/run_experiment.py) using `--save_detector_trace`, then swept offline with [`scripts/run_trace_threshold_sweep.py`](scripts/run_trace_threshold_sweep.py) over the full 3 x 3 x 3 grid `tau_kl in {0.35, 0.50, 0.65}`, `tau_entropy in {0.64, 0.80, 0.96}`, and `tau_spearman in {0.32, 0.40, 0.48}`. The resulting artifacts show complete pattern stability across all 27 configurations on both traced runs: Task 2 always alerts from episode 50 onward with 12/12 alert windows, while Task 3 never alerts during the 600-episode traced run.
+
+This is enough to say that the detector is locally stable to substantial threshold perturbations in both checkpoint evaluation and traced training reruns. The remaining calibration gap is narrower and more specific: the repository still lacks a larger bank of traced runs across all tasks and seeds, and it does not yet provide formal false-positive / false-negative estimates against human-labeled hacking windows. The current proxy reference rule in the training-trace sweep is useful for sanity checking exploit-prone runs, but it is not a substitute for manual calibration labels.
+
+The SQL domain operationalizes this methodology in a form with executable semantics and stronger verification than RLHF-style text rewards, even though the strictest verifier in this repository is degenerate in practice. That still makes it a useful testbed for hacking-detection methods that later generalize to domains where verification is even weaker. The key research contribution is demonstrating that the same statistical framework — KL + entropy + Spearman, with majority-vote composite alerts — detects reward hacking across both a structured task domain (SQL) and the unstructured natural language domain studied in the RLHF literature.
 
 ---
 
 ## Production-Grade Environment Roadmap
 
-This environment is an intentional research prototype: a small schema, fixed NL vocabulary, and slot-filling MDP chosen for analytical tractability. The following extensions would be required to deploy a version of this environment in a production ML pipeline:
+This environment is an intentional research prototype: a small schema, fixed NL vocabulary, and slot-filling MDP chosen for analytical tractability. The roadmap below is driven by the failure modes exposed in the experiments rather than by a generic SQL-agent wish list.
 
 **1. Scale the schema and task set**
+
+Motivated by Findings 1 and 3: the current task set is small enough that task-specific local optima and brittle transfer effects dominate. A larger schema and broader task family are required to test whether the observed hacking patterns and curriculum hierarchy persist outside this toy regime.
 
 The 4-table, 20-column e-commerce schema is sufficient for 5 task types but would not support enterprise SQL diversity. A production environment would require:
 - 50–200 tables with realistic FK graphs (star schema, snowflake schema, self-referential FKs)
@@ -431,6 +466,8 @@ The 4-table, 20-column e-commerce schema is sufficient for 5 task types but woul
 
 **2. Replace the NL encoder**
 
+Motivated by Finding 4: the rule agent matches the information content of the current BoW encoder too closely for the learned policy to demonstrate clear representational gains.
+
 The 128-dim bag-of-words encoder is the dominant performance ceiling (see Finding 4). A production encoder would be:
 - A frozen pre-trained sentence encoder (BERT, T5) producing 768-dim embeddings
 - Or a jointly trained encoder using a contrastive NL-to-SQL matching objective
@@ -438,11 +475,15 @@ The 128-dim bag-of-words encoder is the dominant performance ceiling (see Findin
 
 **3. Move from slot-filling to constrained beam search**
 
+Motivated by the exact-match validity problem and the execution-insensitivity result: the current slot-filling policy makes it easy to accumulate partial credit without assembling semantically correct SQL. A grammar-constrained decoder would tighten the link between action choices and executable semantics.
+
 Slot-filling cannot express all SQL constructs (window frames, CTEs, lateral joins, arithmetic in SELECT). A production action space would use:
 - Constrained beam search over a SQL grammar, with schema-grounded validity checks at each token
 - Or a hybrid: slot-filling for common constructs, with an escape action that invokes token-level generation for rare constructs
 
 **4. Live database execution with data drift**
+
+Motivated by the weight-ablation red flag: if stronger execution penalties do not move behavior in a static database, the next environment should test richer semantic feedback under changing data distributions and explicit query-cost consequences.
 
 The current executor uses a static database seeded at launch. A production environment would support:
 - Live database connections with MVCC-isolated snapshot reads (preventing reward manipulation via data mutation)
@@ -450,6 +491,8 @@ The current executor uses a static database seeded at launch. A production envir
 - Query execution cost as an explicit efficiency signal (not just row count)
 
 **5. Multi-turn conversational interface**
+
+Motivated by Findings 1 and 4: one way to break keyword monoculture and expose richer policy behavior is to move beyond one-shot queries into clarification and refinement, where conversational context can create natural action diversity that a rule baseline cannot exploit as easily.
 
 Current tasks are single-turn: one NL query → one SQL query. A production version would model:
 - Clarification dialogue (NL ambiguity resolution → SQL refinement)

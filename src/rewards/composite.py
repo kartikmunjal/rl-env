@@ -22,9 +22,10 @@ The efficiency penalty:
     an agent that adds "LIMIT 100" cannot hide the true result-set size.
 
 Weight sensitivity (documented in reward_hacking_report.md §H4.1):
-    High w_exec → sparse reward, correct policy, slow learning
-    High w_partial → dense reward, fast learning, partial-credit plateau risk
-    The experiments/02_reward_signal_study.py ablates all three weight profiles.
+    High w_exec → sparser reward, but not necessarily better execution behavior
+    High w_partial → denser reward, higher partial-credit plateau risk
+    The released ablation shows that reweighting alone does not fix execution
+    insensitivity in this environment.
 
 Returns: (scalar_reward, component_dict)
     The component_dict contains all sub-rewards for logging and analysis.

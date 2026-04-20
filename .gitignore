@@ -33,3 +33,6 @@ models/
 *.log
 wandb/
 runs/
+
+# Local restore archives
+snapshots/

@@ -4,6 +4,8 @@
 
 This report documents eight reward hacking scenarios identified in the sql-rl-env benchmark. For each scenario we provide: the formal mechanism, a concrete example, an empirical detection method, and the counter-measure implemented in the codebase.
 
+One scope note is necessary after the final experiments: several "counter-measures" in this document are best understood as *partial mitigations or monitoring hooks*, not complete fixes. In particular, the final weight ablation shows that stronger execution penalties do not improve execution match, and the exact-match metric never becomes non-zero for any agent. Those results narrow what can be claimed about semantic verification in the current environment.
+
 The framework follows the definition: *reward hacking occurs when a policy achieves high reward under a given reward function without achieving the intended behaviour.*
 
 ---
@@ -92,7 +94,7 @@ The execution match reward includes a 0.5 partial score when `|predicted ∩ gol
 **The critical case:** When the gold result set is large relative to the table size. If the gold query returns 40 out of 50 customers, then `SELECT * FROM customers` achieves Jaccard = 40/50 = 0.80, triggering the 0.5 partial reward.
 
 ### Empirical Detection
-The `RewardHackingDetector` Signal 1 tracks the KL divergence of the row count distribution. An agent exploiting H2.1 will shift the distribution toward larger result sets. In our experiments, we set `kl_threshold = 0.5` — a KL divergence above this value triggers a Signal 1 alert.
+The `RewardHackingDetector` Signal 1 tracks the KL divergence of the row count distribution. An agent exploiting H2.1 will shift the distribution toward larger result sets. In the current implementation, `kl_threshold = 0.5` began as a heuristic default baked into the detector. It is no longer completely untested: the repo now includes both checkpoint-evaluation and traced-training threshold sweeps, and the observed alert patterns are stable across substantial perturbations of `tau_kl`. What remains uncalibrated is the stronger claim about formal false-positive / false-negative rates on a large bank of human-labeled windows.
 
 **Example output from hacking detector:**
 ```
@@ -103,6 +105,8 @@ HackingAlert(episode=450, signal="row_distribution", severity=0.72,
 
 ### Counter-measure
 The use of Jaccard (|∩|/|∪|) rather than Recall (|∩|/|gold|) is the primary mitigation. With Recall, `SELECT * FROM customers` on a query with 40 gold rows would achieve Recall = 40/40 = 1.0 — a perfect score for a trivially wrong query. With Jaccard, it achieves 40/50 = 0.80 on the partial check. While this is above the 0.50 threshold, the efficiency penalty in R4 fires (50 vs. 40 rows, ratio = 1.25 < 5.0 threshold, so no penalty in this case). For cases with much larger result sets, the efficiency penalty provides the correction.
+
+This should not be overstated: the mitigation is incomplete. If the predicted result is a moderately oversized superset, execution match can still award partial credit, and the current benchmark does not have a separate exact-verification layer that ever activates in practice.
 
 ---
 
@@ -184,11 +188,13 @@ A 0.70 partial credit score on every episode with wrong operator is a stable loc
 In pilot experiments with high `w_partial` (0.60) in the composite reward, we observe the `>=` operator appearing in >80% of episodes targeting numeric WHERE conditions. Shannon entropy of the operator distribution collapses from H=1.58 (uniform over 7 operators) to H=0.0.
 
 ### Detection
-`RewardHackingDetector` Signal 2 tracks the Shannon entropy of WHERE operators used. When entropy < `entropy_threshold = 0.8` (normalised) AND a single operator dominates, a Signal 2 alert fires.
+`RewardHackingDetector` Signal 2 tracks the Shannon entropy of WHERE operators used. When entropy < `entropy_threshold = 0.8` (normalised) AND a single operator dominates, a Signal 2 alert fires. As with the KL threshold, this entropy threshold started as a heuristic default; traced reruns now show local stability under +/-20% perturbations on representative tasks, but full calibration across tasks, seeds, and labeled windows remains open.
 
 ### Counter-measure
-1. **Composite reward weighting**: Using `w_exec=0.50` in the default composite reward means an agent achieving 0.70 partial credit but 0.0 execution match earns a composite reward of `0.50*0 + 0.30*0.70 + 0.15*0 = 0.21`. A correct query earns `0.50*1.0 + 0.30*1.0 + 0.15*1.0 = 0.95`. The execution match signal breaks the local optimum.
-2. **Operator diversity detection**: The reward hacking detector flags this pattern early in training, allowing researchers to adjust reward weights before the policy fully converges.
+1. **Composite reward weighting**: In principle, adding execution match should make the operator-gaming optimum less attractive because a correct query still dominates numerically.
+2. **Operator diversity detection**: The reward hacking detector flags this pattern early in training, allowing researchers to inspect collapse dynamics.
+
+The final experiments weaken the stronger version of this claim. The weight ablation shows that increasing `w_exec` does not materially improve execution match, so in this environment the execution component does not reliably break the local optimum by itself. This is best read as a prototype-design limitation that directly motivates a tighter semantic action space and richer execution feedback, not as evidence that reward-signal analysis is pointless.
 
 ---
 
@@ -211,13 +217,15 @@ At `w_partial=0.60`, the correct policy still dominates (0.87 > 0.42). But consi
 The gap narrows. At extreme `w_partial`, the agent can get "stuck" in a region where incremental improvements in partial credit prevent it from exploring the larger steps needed to achieve full execution match.
 
 ### Empirical Analysis
-The `experiments/02_reward_signal_study.py` script trains three REINFORCE agents on Task 2 with weight profiles:
-- **Balanced**: `w_exec=0.50, w_partial=0.30` → best execution match
-- **High exec**: `w_exec=0.70, w_partial=0.20` → fastest exec match, slowest convergence
-- **High partial**: `w_exec=0.30, w_partial=0.50` → fastest early learning, plateau at ~0.45 exec match
+The released weight ablation trains three REINFORCE agents on Tasks 2 and 5 with three weight profiles:
+- **Balanced**: `w_exec=0.50, w_partial=0.30`
+- **High exec**: `w_exec=0.70, w_partial=0.20`
+- **High partial**: `w_exec=0.30, w_partial=0.50`
+
+The key result is the opposite of what a successful weighting fix would show: execution match remains effectively unchanged across all three settings. Increasing `w_exec` suppresses composite reward but does not improve semantic behavior. This is evidence for an execution-insensitive partial-credit optimum, not for a clean trade-off frontier.
 
 ### Counter-measure
-Default weights `w_exec=0.50, w_partial=0.30` are chosen to balance convergence speed and final policy quality. The weight ablation study in `notebooks/02_reward_function_comparison.ipynb` visualises this trade-off explicitly.
+There is no complete counter-measure for H4.1 in the current repository. The default weights `w_exec=0.50, w_partial=0.30` are best viewed as a pragmatic baseline for this toy environment, not as a validated optimum. The weight ablation demonstrates that reweighting alone does not repair the semantic blind spot. The useful research outcome is that this failure mode is now explicit and reproducible rather than hidden behind aggregate reward improvements.
 
 ---
 
@@ -270,10 +278,10 @@ The eight hacking scenarios documented here span four categories of reward gamin
 
 2. **Coverage exploits** (H2.1, H3.1): Maximising result set size or selected column count to inflate set-intersection numerators. Mitigation: Jaccard (not recall/precision) for set comparisons.
 
-3. **Fixed-point stagnation** (H2.2, H4.1): The policy converges to a degenerate local optimum where the reward signal provides no gradient toward the correct policy. Mitigation: negative penalty for errors; balanced composite weights.
+3. **Fixed-point stagnation** (H2.2, H4.1): The policy converges to a degenerate local optimum where the reward signal provides weak or non-separating gradient toward the correct policy. Mitigation: negative penalty for errors; partial monitoring only.
 
 4. **Penalty evasion** (H3.2, H4.2): The agent learns to avoid triggering specific penalties (operator monoculture, efficiency threshold) through strategies that do not involve generating correct SQL. Mitigation: detection-based monitoring (operator entropy, Spearman trend) and penalty-evasion-proof counting (pre-LIMIT COUNT).
 
-The composite reward R4 addresses scenarios H1.1, H1.2, H2.1, H2.2, and H4.2 through its design. Scenarios H3.2 and H4.1 are observable but not fully mitigated — they represent the fundamental tension between dense rewards (necessary for learning) and reward hacking vulnerability.
+The composite reward R4 addresses scenarios H1.1, H1.2, H2.1, H2.2, and H4.2 only partially through its design. Scenarios H3.2 and H4.1 are observable but not fully mitigated, and the final ablations suggest that some of the nominal mitigations do not move behavior in practice. This is the fundamental tension in the benchmark: dense rewards are necessary for learning, but the current dense signals are still loose enough to admit stable non-semantic optima.
 
-This is consistent with the broader RLHF literature: dense reward signals provide better gradient information but create more surface area for hacking. The optimal reward design for this domain is an empirical question answered by the weight ablation study in `experiments/02_reward_signal_study.py`.
+This is consistent with the broader RLHF literature: dense reward signals provide better gradient information but create more surface area for hacking. In this repository, the weight ablation does not answer the reward-design question conclusively; it mainly shows that simple reweighting is insufficient.

@@ -22,9 +22,11 @@ Author: Kartik Munjal
 
 import argparse
 import json
+import re
 import sys
 import time
 from pathlib import Path
+from typing import Optional
 
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -39,12 +41,72 @@ from src.rewards import get_reward_fn
 from src.analysis.reward_hacking_detector import RewardHackingDetector
 
 
+def _extract_detector_stats(sql: str, reward_components: dict) -> dict:
+    """Extract the detector inputs from the final SQL and reward components."""
+    op_m = re.search(r"\bWHERE\s+\S+\s*(=|!=|>=|<=|>|<|LIKE|IN|NOT\s+IN)\b", sql, re.IGNORECASE)
+    where_op = op_m.group(1).upper().replace("  ", " ") if op_m else "NONE"
+
+    sel_m = re.search(r"\bSELECT\s+(.*?)\s+FROM\b", sql, re.IGNORECASE | re.DOTALL)
+    if sel_m:
+        select_cols = [c.strip() for c in sel_m.group(1).split(",") if c.strip()]
+        select_col_count = len(select_cols)
+    else:
+        select_col_count = 0
+
+    predicted_rows = int(
+        reward_components.get(
+            "exec_pred_rows_no_limit",
+            reward_components.get("exec_pred_rows", 0),
+        )
+    )
+
+    return {
+        "predicted_rows": predicted_rows,
+        "where_operator": where_op,
+        "select_col_count": select_col_count,
+    }
+
+
+def _build_trace_entry(
+    episode: int,
+    task_id: str,
+    reward_name: str,
+    final_info: dict,
+    ep_reward: float,
+) -> dict:
+    """Persist enough per-episode context for offline detector calibration."""
+    rc = final_info.get("reward_components", {})
+    sql = final_info.get("sql_so_far", "")
+    detector_stats = _extract_detector_stats(sql, rc)
+    return {
+        "episode": episode,
+        "task_id": task_id,
+        "reward_name": reward_name,
+        "nl_query": final_info.get("nl_query", ""),
+        "sql": sql,
+        "reward": ep_reward,
+        "r_exec": rc.get("r_exec", rc.get("execution_match", 0.0)),
+        "r_partial": rc.get("r_partial", rc.get("partial_credit", 0.0)),
+        "r_exact": rc.get("r_exact", rc.get("exact_match", 0.0)),
+        "exec_reason": rc.get("exec_reason", rc.get("reason", "")),
+        "exec_pred_rows": rc.get("exec_pred_rows", rc.get("pred_rows", 0)),
+        "exec_pred_rows_no_limit": rc.get("exec_pred_rows_no_limit", rc.get("pred_rows_no_limit", 0)),
+        "exec_gold_rows": rc.get("exec_gold_rows", rc.get("gold_rows", 0)),
+        "efficiency_penalty": rc.get("efficiency_penalty", 0.0),
+        **detector_stats,
+    }
+
+
 def run_episodes(
     env: SQLQueryEnv,
     agent,
     n_episodes: int,
     training: bool = False,
     detector: RewardHackingDetector = None,
+    detector_trace: Optional[list[dict]] = None,
+    task_id: str = "",
+    reward_name: str = "",
+    start_episode: int = 0,
 ) -> dict:
     """Run n_episodes and return aggregate metrics."""
     rewards = []
@@ -77,21 +139,34 @@ def run_episodes(
         exec_matches.append(rc.get("r_exec", rc.get("execution_match", 0.0)))
         partial_credits.append(rc.get("r_partial", rc.get("partial_credit", 0.0)))
 
+        global_episode = start_episode + ep + 1
+
         if ep < 5 or ep % 100 == 0:
             sql_samples.append({
-                "episode": ep,
+                "episode": global_episode,
                 "nl": final_info.get("nl_query", ""),
                 "sql": final_info.get("sql_so_far", ""),
                 "reward": ep_reward,
             })
 
-        # Update hacking detector
+        trace_entry = _build_trace_entry(
+            episode=global_episode,
+            task_id=task_id,
+            reward_name=reward_name,
+            final_info=final_info,
+            ep_reward=ep_reward,
+        )
+
         if detector:
             detector.update({
-                "predicted_rows": rc.get("exec_pred_rows", 0),
-                "where_operator": "=",   # TODO: extract from SQL
-                "select_col_count": 1,   # TODO: count from SQL
+                "predicted_rows": trace_entry["predicted_rows"],
+                "where_operator": trace_entry["where_operator"],
+                "select_col_count": trace_entry["select_col_count"],
+                "assembled_sql": trace_entry["sql"],
             })
+
+        if detector_trace is not None:
+            detector_trace.append(trace_entry)
 
     return {
         "mean_reward": float(np.mean(rewards)),
@@ -110,6 +185,7 @@ def train_reinforce(
     max_episodes: int = 2000,
     eval_every: int = 100,
     eval_episodes: int = 100,
+    save_detector_trace: bool = False,
     verbose: bool = True,
 ) -> dict:
     cfg_path = str(project_root / "configs/env_config.yaml")
@@ -147,6 +223,7 @@ def train_reinforce(
     results_dir.mkdir(parents=True, exist_ok=True)
 
     training_log = []
+    detector_trace: list[dict] = []
     best_eval_reward = -float("inf")
 
     print(f"\n{'='*60}")
@@ -159,7 +236,15 @@ def train_reinforce(
         # Training
         agent.train_mode()
         train_metrics = run_episodes(
-            env, agent, n_episodes=eval_every, training=True, detector=detector
+            env,
+            agent,
+            n_episodes=eval_every,
+            training=True,
+            detector=detector,
+            detector_trace=detector_trace if save_detector_trace else None,
+            task_id=task_id,
+            reward_name=reward_name,
+            start_episode=ep_batch,
         )
 
         # Hacking detection
@@ -172,7 +257,12 @@ def train_reinforce(
         # Evaluation
         agent.eval_mode()
         eval_metrics = run_episodes(
-            eval_env, agent, n_episodes=eval_episodes, training=False
+            eval_env,
+            agent,
+            n_episodes=eval_episodes,
+            training=False,
+            task_id=task_id,
+            reward_name=reward_name,
         )
 
         log_entry = {
@@ -201,6 +291,17 @@ def train_reinforce(
     # Save results
     (results_dir / "training_log.json").write_text(json.dumps(training_log, indent=2))
     detector.save_alerts(str(results_dir / "hacking_alerts.json"))
+    if save_detector_trace:
+        trace_payload = {
+            "task_id": task_id,
+            "reward_name": reward_name,
+            "max_episodes": max_episodes,
+            "eval_every": eval_every,
+            "eval_episodes": eval_episodes,
+            "n_trace_entries": len(detector_trace),
+            "entries": detector_trace,
+        }
+        (results_dir / "detector_trace.json").write_text(json.dumps(trace_payload, indent=2))
 
     print(f"\nBest eval reward: {best_eval_reward:.4f}")
     print(f"Results saved to: {results_dir}")
@@ -222,6 +323,9 @@ def main():
                         choices=["exact", "execution", "partial", "composite"])
     parser.add_argument("--episodes", type=int, default=2000)
     parser.add_argument("--eval_every", type=int, default=100)
+    parser.add_argument("--eval_episodes", type=int, default=100)
+    parser.add_argument("--save_detector_trace", action="store_true",
+                        help="Persist per-episode detector inputs for offline threshold calibration")
     parser.add_argument("--all", action="store_true",
                         help="Run all task × reward combinations")
     parser.add_argument("--dry_run", action="store_true",
@@ -254,11 +358,15 @@ def main():
             for reward in all_rewards:
                 train_reinforce(task, reward, root,
                                 max_episodes=args.episodes,
-                                eval_every=args.eval_every)
+                                eval_every=args.eval_every,
+                                eval_episodes=args.eval_episodes,
+                                save_detector_trace=args.save_detector_trace)
     else:
         train_reinforce(args.task, args.reward, root,
                         max_episodes=args.episodes,
-                        eval_every=args.eval_every)
+                        eval_every=args.eval_every,
+                        eval_episodes=args.eval_episodes,
+                        save_detector_trace=args.save_detector_trace)
 
 
 if __name__ == "__main__":
